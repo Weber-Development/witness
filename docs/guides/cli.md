@@ -1,6 +1,6 @@
 ---
 title: CLI
-description: Mark images in bulk and check files for AI marking from the command line.
+description: Mark images, audio and video in bulk and check files for AI marking from the command line.
 ---
 
 ```sh
@@ -12,7 +12,9 @@ npx witness inspect build/answers/*.md --require   # exit 1 if any file is unmar
 
 `mark` needs either `--out <dir>` or `--in-place`. Options: `--generator`, `--generator-version`, `--kind` (`generated`, `edited`, `deepfake`), `--provider`, `--url`, `--description`, `--overwrite-c2pa`.
 
-`inspect` reports the image format, the IPTC source type, the AI system and whether a C2PA manifest is present. For other files it looks for the text watermark. `--json` prints one JSON object per file.
+`mark` handles PNG, JPEG, WebP, MP3, WAV, MP4, MOV and M4A files.
+
+`inspect` reports the file format, the IPTC source type, the AI system and whether a C2PA manifest is present. For other files it looks for the text watermark. `--json` prints one JSON object per file.
 
 In PowerShell, quote globs or list files explicitly:
 

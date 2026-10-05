@@ -44,6 +44,19 @@ export {
   schemaOrgSourceType,
 } from "./marking.js";
 export {
+  detectMediaFormat,
+  type MarkFileResult,
+  type MarkingInfo,
+  type MarkMediaOptions,
+  type MarkMediaResult,
+  type MediaFormat,
+  type MediaMarkingInfo,
+  markFile,
+  markMedia,
+  readMarking,
+  readMediaMarking,
+} from "./media.js";
+export {
   type ContentKind,
   DISCLOSURE_KINDS,
   type DisclosureKind,

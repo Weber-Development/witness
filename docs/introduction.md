@@ -20,7 +20,7 @@ Witness is a small toolkit for the transparency duties in Article 50 of the EU A
 Be clear with your clients about this, because the obligations are broader than any library:
 
 - Witness does not sign content. The Code of Practice on marking and labelling expects signed, tamper-evident metadata (C2PA) plus an imperceptible watermark for most content. Witness writes unsigned XMP and a text watermark that can be stripped. If your image provider already embeds C2PA Content Credentials, Witness leaves those files untouched.
-- Witness does not watermark audio or video, and it does not change model weights or outputs.
+- Witness marks audio and video files with metadata, but it does not watermark the sound or the picture itself, and it does not change model weights or outputs.
 - Witness does not decide whether a duty applies to you. Whether you are a provider or a deployer, and whether an exception applies, is a legal question. See [What Article 50 asks](legal/article-50.md).
 
 Witness is a tool for implementing the duties, not a compliance guarantee.

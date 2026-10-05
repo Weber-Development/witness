@@ -26,6 +26,10 @@ description: Every export of @sweberdev/witness.
 |---|---|
 | `markImage(bytes, marking?, { c2pa })` | Returns `{ bytes, status, format }`; `status` is `marked`, `skipped-c2pa` or `unsupported` |
 | `readImageMarking(bytes)` | `{ format, xmp, sourceType, aiGenerated, generator, witness, c2pa }` |
+| `markMedia(bytes, marking?, { c2pa })` | The same for MP3, WAV, MP4, MOV and M4A. `format` is `mp3`, `wav` or `mp4` |
+| `readMediaMarking(bytes)` | The same shape as `readImageMarking` |
+| `markFile(bytes, marking?, { c2pa })` / `readMarking(bytes)` | Detect image, audio or video and call the matching function |
+| `detectMediaFormat(bytes)` | `mp3`, `wav`, `mp4` or `null` |
 | `detectImageFormat(bytes)` | `png`, `jpeg`, `webp` or `null` |
 | `buildXmp(marking, existing?)` | The XMP packet |
 

@@ -50,7 +50,8 @@ export interface ImageMarkingInfo {
 }
 
 const XMP_NS = "http://ns.adobe.com/xap/1.0/\0";
-const WITNESS_NS = "https://packages.sweber.dev/witness/ns/1.0/";
+/** @internal */
+export const WITNESS_NS = "https://packages.sweber.dev/witness/ns/1.0/";
 
 /** Detects PNG, JPEG or WebP from the first bytes. */
 export function detectImageFormat(bytes: Uint8Array): ImageFormat | null {
@@ -165,8 +166,8 @@ function buildDescription(m: Marking): string {
     : `<rdf:Description${attrs}/>`;
 }
 
-/** Reads a simple property in attribute or element form. */
-function xmpProperty(xmp: string, name: string): string | undefined {
+/** Reads a simple property in attribute or element form. @internal */
+export function xmpProperty(xmp: string, name: string): string | undefined {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const attribute = new RegExp(`${escaped}="([^"]*)"`).exec(xmp);
   if (attribute?.[1] !== undefined) return unescapeXml(attribute[1]);
