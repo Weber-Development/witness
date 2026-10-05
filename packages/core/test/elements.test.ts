@@ -29,6 +29,23 @@ describe("<witness-notice>", () => {
     expect(root?.querySelector("h2")).not.toBeNull();
   });
 
+  it("sends one shown event when attributes are set after insertion", () => {
+    const shown = vi.fn();
+    const el = document.createElement("witness-notice");
+    el.addEventListener("witness-shown", shown);
+    document.body.append(el);
+    el.setAttribute("kind", "chatbot");
+    el.setAttribute("disclosure-id", "support");
+    el.setAttribute("locale", "fr");
+    el.setAttribute("locale", "fr");
+    expect(shown).toHaveBeenCalledTimes(2);
+    expect(shown.mock.calls.map((c) => c[0].detail.id)).toEqual(["chatbot", "support"]);
+    expect(el.shadowRoot?.querySelector("h2")?.textContent).toBe("Vous discutez avec une IA");
+
+    el.setAttribute("version", "2");
+    expect(shown).toHaveBeenCalledTimes(3);
+  });
+
   it("stays collapsed after reload until the version changes", () => {
     localStorage.setItem("witness:ack:chatbot", JSON.stringify({ version: "1", at: "2026-10-05" }));
     document.body.innerHTML = "<witness-notice></witness-notice>";
