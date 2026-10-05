@@ -18,6 +18,10 @@
       ]
     },
     {
+      "label": "Pro",
+      "items": ["pro/overview", "pro/locales", "pro/scan", "pro/report"]
+    },
+    {
       "label": "Reference",
       "items": ["reference/api", "reference/locales"]
     }

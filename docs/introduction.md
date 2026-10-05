@@ -13,7 +13,7 @@ Witness is a small toolkit for the transparency duties in Article 50 of the EU A
 - **Text marking**: an invisible watermark for AI-generated text, plus schema.org JSON-LD and meta tags for whole pages.
 - **Vercel AI SDK middleware**: marks every answer from `generateText` and `streamText` and every image from `generateImage` automatically.
 - **Evidence events**: a callback for every notice shown and acknowledged, to keep a record of what people were told.
-- Wording in **English, German, French and Italian**, overridable per string. Witness Pro adds all 24 official EU languages.
+- Wording in **English, German, French and Italian**, overridable per string. [Witness Pro](pro/overview.md) adds all 24 official EU languages.
 
 ## What Witness does not do
 
