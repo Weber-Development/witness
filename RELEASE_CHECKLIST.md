@@ -12,3 +12,13 @@
 | Blog post | `content/blog/witness-0-1-0-released.md` in portfoliov3, after 0.1.0 is on npm |
 | Trademark check "Witness" | open (Seya) |
 | Legal review of the docs' summary of Art. 50 | recommended (Seya) |
+
+## 0.2.0 (2026-10-05)
+
+| Item | Status |
+|---|---|
+| npm `@sweberdev/witness`, `@sweberdev/witness-react` 0.2.0 | published (audio and video marking) |
+| Pro 0.2.0 (scanner checks audio and video) | `Weber-Development/witness-pro` PR #4, then the version PR and the dist sync |
+| Docs | `docs/guides/audio-video.md`, Pro scanner rules in `docs/pro/scan.md` |
+| Blog post | `content/blog/witness-0-2-0-released.md` in portfoliov3 |
+| Roadmap | `/mnt/project-files/roadmaps/witness.md` in the project files |

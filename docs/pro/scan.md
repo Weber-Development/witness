@@ -16,6 +16,8 @@ npx witness-scan out --json witness-scan.json
 | `marked-without-label` | error | An element with `data-ai-generated` without a visible label in it or next to it. |
 | `ai-image-unlabelled` | error | An image whose file says it is AI-generated (IPTC source type), shown without a label next to it. |
 | `ai-image-unmarked` | error | An image in a folder you declared as AI-generated with neither IPTC marking nor a C2PA manifest. |
+| `ai-media-unlabelled` | error | An audio or video file whose metadata says it is AI-generated, played in `<audio>` or `<video>` without a label next to the player. Since 0.2. |
+| `ai-media-unmarked` | error | An MP3, WAV, MP4, MOV or M4A file in a folder you declared as AI-generated with neither IPTC marking nor a C2PA manifest. Since 0.2. |
 | `ai-text-unmarked` | warning | A text file you declared as AI-generated without the Witness watermark. |
 | `chat-without-notice` | error | A chat page without an AI notice in the chat container. |
 | `chat-selector-missing` | warning | A chat page where the configured chat container does not exist. |
@@ -32,6 +34,7 @@ The `scan` section of `witness.config.json`:
     "root": "out",
     "chat": [{ "pages": ["support/**/*.html"], "selector": "#chat" }],
     "aiImages": ["images/generated/**"],
+    "aiMedia": ["media/generated/**"],
     "aiText": ["answers/**/*.md"],
     "rules": { "ai-text-unmarked": "off" }
   }
@@ -45,6 +48,7 @@ The `scan` section of `witness.config.json`:
 | `exclude` | `[]` | Paths to skip. `node_modules` and `.git` are always skipped. |
 | `chat` | `[]` | Pages with a chat, and optionally the CSS selector of the chat container the notice must be in. |
 | `aiImages` | `[]` | Images that must carry an AI marking. |
+| `aiMedia` | `[]` | Audio and video files that must carry an AI marking ([how to mark them](../guides/audio-video.md)). |
 | `aiText` | `[]` | Text files that must carry the Witness watermark. |
 | `labelSelectors` | `witness-label`, `.witness-label`, `[data-ai-label]` | What counts as a visible label. Add your own badge class here. |
 | `noticeSelectors` | `witness-notice`, `.witness-notice`, `[data-ai-notice]` | What counts as a chatbot notice. |
