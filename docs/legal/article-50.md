@@ -10,7 +10,7 @@ This page summarises the law so you can find the right feature. It is not legal 
 | Paragraph | Who | Duty | Witness |
 |---|---|---|---|
 | 50(1) | Providers of AI systems that interact directly with people | Design the system so people are told they are interacting with an AI, unless that is obvious from the context | `<witness-notice>`, `<AiNotice>` |
-| 50(2) | Providers of AI systems that generate synthetic audio, images, video or text | Mark the outputs in a machine-readable format so they are detectable as artificially generated or manipulated | Image XMP, text watermark, AI SDK middleware (partly, see below) |
+| 50(2) | Providers of AI systems that generate synthetic audio, images, video or text | Mark the outputs in a machine-readable format so they are detectable as artificially generated or manipulated | XMP for images, audio and video, text watermark, AI SDK middleware (partly, see below) |
 | 50(3) | Deployers of emotion recognition or biometric categorisation | Inform the people exposed to the system | `kind="emotion-recognition"`, `kind="biometric-categorisation"` |
 | 50(4) | Deployers of systems that create deepfakes, or text published to inform the public on matters of public interest | Disclose that the content was artificially generated or manipulated. For text, not needed when a person reviewed it and someone holds editorial responsibility | `<witness-label kind="deepfake">`, `labelHtml`, `humanReviewed` |
 | 50(5) | All of the above | Give the information clearly, at the latest at the first interaction or exposure, and accessibly | Notices shown before the first message, labels at the top, screen reader support |
@@ -31,7 +31,7 @@ The European Commission published a voluntary Code of Practice on marking and la
 - A common EU icon built around the letters "AI" is foreseen for visible labels; equivalent icons are allowed.
 - Labels for published text belong at the top, near the headline. Deepfake video is labelled at the start and repeatedly; audio gets a spoken disclaimer at the beginning.
 
-Witness covers the visible label, unsigned metadata and a text watermark. It does not produce signed C2PA manifests or watermarks for images, audio or video. For full 50(2) marking of images, use a generator that embeds C2PA Content Credentials, or add a C2PA signing step; Witness keeps such files intact.
+Witness covers the visible label, unsigned metadata and a text watermark. It does not produce signed C2PA manifests or signal watermarks for images, audio or video; for audio and video it writes XMP metadata. For full 50(2) marking of images, use a generator that embeds C2PA Content Credentials, or add a C2PA signing step; Witness keeps such files intact.
 
 ## Sources
 

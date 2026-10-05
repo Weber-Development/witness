@@ -1,8 +1,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { parseArgs } from "node:util";
-import { detectImageFormat, markImage, readImageMarking } from "./image.js";
+import { detectImageFormat } from "./image.js";
 import { iptcSourceType } from "./marking.js";
+import { detectMediaFormat, markFile, readMarking } from "./media.js";
 import type { ContentKind, MarkingInput } from "./types.js";
 import { readTextWatermark } from "./watermark.js";
 
@@ -11,7 +12,7 @@ export interface CliIo {
   err: (line: string) => void;
 }
 
-const HELP = `witness: AI Act Article 50 marking for images and text
+const HELP = `witness: AI Act Article 50 marking for images, audio, video and text
 
 Usage
   witness mark <files...> (--out <dir> | --in-place) [options]
@@ -30,7 +31,8 @@ inspect options
   --json                     one JSON object per file
   --require                  exit 1 if a file carries no AI marking
 
-Images: PNG, JPEG, WebP (XMP with IPTC Digital Source Type).
+Images: PNG, JPEG, WebP. Audio and video: MP3, WAV, MP4, MOV, M4A.
+All get XMP with the IPTC Digital Source Type.
 Text files are checked for the Witness text watermark.`;
 
 const KINDS: ContentKind[] = ["generated", "edited", "deepfake"];
@@ -86,11 +88,11 @@ async function mark(argv: string[], io: CliIo): Promise<number> {
   let failed = 0;
   for (const file of positionals) {
     const bytes = new Uint8Array(await readFile(file));
-    const result = markImage(bytes, input, {
+    const result = markFile(bytes, input, {
       c2pa: values["overwrite-c2pa"] ? "overwrite" : "skip",
     });
     if (result.status === "unsupported") {
-      io.err(`${file}: not a PNG, JPEG or WebP file, skipped`);
+      io.err(`${file}: not a PNG, JPEG, WebP, MP3, WAV or MP4 file, skipped`);
       failed++;
       continue;
     }
@@ -115,9 +117,9 @@ async function inspect(argv: string[], io: CliIo): Promise<number> {
   let unmarked = 0;
   for (const file of positionals) {
     const bytes = new Uint8Array(await readFile(file));
-    const format = detectImageFormat(bytes);
+    const format = detectImageFormat(bytes) ?? detectMediaFormat(bytes);
     if (format) {
-      const info = readImageMarking(bytes);
+      const info = readMarking(bytes);
       const marked = info.aiGenerated || info.c2pa;
       if (!marked) unmarked++;
       if (values.json) {

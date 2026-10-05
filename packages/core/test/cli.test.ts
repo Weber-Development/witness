@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import sharp from "sharp";
@@ -14,6 +14,19 @@ function io() {
 }
 
 describe("witness CLI", () => {
+  it("marks and inspects audio files", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "witness-"));
+    const file = join(dir, "voice.mp3");
+    await copyFile(new URL("./fixtures/tone.mp3", import.meta.url), file);
+    const marked = io();
+    expect(await runCli(["mark", file, "--in-place", "--generator", "tts"], marked.io)).toBe(0);
+    expect(marked.out[0]).toContain("marked (mp3)");
+    const inspected = io();
+    expect(await runCli(["inspect", file, "--require"], inspected.io)).toBe(0);
+    expect(inspected.out[0]).toContain("mp3");
+    expect(inspected.out[0]).toContain("generator tts");
+  });
+
   it("marks images into an output directory and inspects them", async () => {
     const dir = await mkdtemp(join(tmpdir(), "witness-"));
     const file = join(dir, "hero.jpg");
