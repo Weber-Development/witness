@@ -44,4 +44,4 @@ await audit.log({
 
 Do not log more than you need. The events contain no personal data by themselves; if you attach a user id, the usual data protection rules apply.
 
-Witness Pro's [report](../pro/report.md) turns your AI register and these records into a document for clients.
+Witness Pro's report turns your AI register and these records into a document for clients.

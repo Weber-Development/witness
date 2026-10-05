@@ -20,10 +20,6 @@
     {
       "label": "Reference",
       "items": ["reference/api", "reference/locales"]
-    },
-    {
-      "label": "Pro",
-      "items": ["pro/overview", "pro/locales", "pro/scan", "pro/report"]
     }
   ]
 }
