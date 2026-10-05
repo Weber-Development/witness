@@ -48,4 +48,4 @@ XMP metadata is removed by many upload pipelines, messengers and social networks
 
 ## Batch and CI
 
-See [CLI](cli.md) for `witness mark` and `witness inspect`. Witness Pro adds a scanner that checks a whole build.
+See [CLI](cli.md) for `witness mark` and `witness inspect`. Witness Pro adds a [scanner](../pro/scan.md) that checks a whole build.
