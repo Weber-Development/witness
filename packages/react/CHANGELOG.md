@@ -1,5 +1,13 @@
 # @sweberdev/witness-react
 
+## 0.1.1
+
+### Patch Changes
+
+- fcf2059: `<witness-notice>` sends `witness-shown` once per disclosure id and version. Setting attributes after the element was inserted, as frameworks do, no longer repeats the event, so evidence counts stay correct.
+- Updated dependencies [fcf2059]
+  - @sweberdev/witness@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
