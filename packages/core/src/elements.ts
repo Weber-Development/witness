@@ -103,6 +103,8 @@ export class WitnessNoticeElement extends BaseElement {
   #disclosure: Disclosure | null = null;
   #unsubscribe: (() => void) | null = null;
   #expanded = false;
+  /** `id@version` of the disclosure a `shown` event was sent for, so attribute changes don't repeat it. */
+  #shownFor: string | null = null;
 
   connectedCallback(): void {
     if (!this.shadowRoot) this.attachShadow({ mode: "open" });
@@ -114,7 +116,8 @@ export class WitnessNoticeElement extends BaseElement {
     this.#unsubscribe = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (this.isConnected && this.shadowRoot) this.#setup();
   }
 
@@ -189,7 +192,11 @@ export class WitnessNoticeElement extends BaseElement {
         ),
       );
       root.replaceChildren(style, box);
-      disclosure.markShown();
+      const shownFor = `${disclosure.id}@${disclosure.version}`;
+      if (this.#shownFor !== shownFor) {
+        this.#shownFor = shownFor;
+        disclosure.markShown();
+      }
     } else {
       const reopen = h(
         doc,
