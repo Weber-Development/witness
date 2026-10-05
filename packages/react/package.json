@@ -1,0 +1,75 @@
+{
+  "name": "@sweberdev/witness-react",
+  "version": "0.0.0",
+  "description": "React components for Witness: chatbot AI notice, AI labels and marked content blocks for Article 50 of the EU AI Act.",
+  "license": "MIT",
+  "author": "Seya Weber (https://github.com/sxwxbxr)",
+  "homepage": "https://packages.sweber.dev/witness/docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weber-Development/witness.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/Weber-Development/witness/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "ai-act",
+    "article-50",
+    "ai-label",
+    "ai-disclosure",
+    "react",
+    "chatbot"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@sweberdev/witness": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.3.0",
+    "jsdom": "^27.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.3"
+  }
+}

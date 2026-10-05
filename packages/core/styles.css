@@ -1,0 +1,103 @@
+/* Styles for labels rendered by labelHtml() and @sweberdev/witness-react.
+   Override the custom properties to match your design. */
+:root {
+  --witness-accent: #003399;
+  --witness-accent-text: #ffffff;
+  --witness-bg: #ffffff;
+  --witness-fg: #1a1a1a;
+  --witness-muted: #555b66;
+  --witness-border: #d7dbe3;
+  --witness-radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --witness-accent: #8fb0ff;
+    --witness-accent-text: #0b1530;
+    --witness-bg: #15181f;
+    --witness-fg: #eef1f6;
+    --witness-muted: #a9b0bd;
+    --witness-border: #2c323d;
+  }
+}
+.witness-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  align-items: center;
+  margin: 0 0 0.75em;
+  padding: 0.2em 0.6em 0.2em 0.25em;
+  border: 1px solid var(--witness-border);
+  border-radius: 999px;
+  background: var(--witness-bg);
+  color: var(--witness-fg);
+  font-size: 0.875em;
+  line-height: 1.4;
+}
+.witness-label__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75em;
+  height: 1.5em;
+  padding: 0 0.3em;
+  border-radius: 4px;
+  background: var(--witness-accent);
+  color: var(--witness-accent-text);
+  font-weight: 700;
+  font-size: 0.75em;
+  line-height: 1;
+}
+.witness-label__link {
+  color: inherit;
+}
+.witness-content > .witness-label:last-child {
+  margin: 0.75em 0 0;
+}
+.witness-notice {
+  display: flex;
+  gap: 0.75em;
+  align-items: flex-start;
+  padding: 0.875em 1em;
+  border: 1px solid var(--witness-border);
+  border-left: 4px solid var(--witness-accent);
+  border-radius: var(--witness-radius);
+  background: var(--witness-bg);
+  color: var(--witness-fg);
+}
+.witness-notice__title {
+  font-size: 1em;
+  margin: 0 0 0.25em;
+}
+.witness-notice__body {
+  margin: 0 0 0.75em;
+  line-height: 1.45;
+}
+.witness-notice__actions {
+  display: flex;
+  gap: 0.75em;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.witness-notice__ack {
+  font: inherit;
+  cursor: pointer;
+  padding: 0.4em 0.9em;
+  border-radius: 6px;
+  border: 0;
+  background: var(--witness-accent);
+  color: var(--witness-accent-text);
+  font-weight: 600;
+}
+.witness-notice--compact {
+  display: inline-flex;
+  gap: 0.5em;
+  align-items: center;
+  font: inherit;
+  font-size: 0.875em;
+  cursor: pointer;
+  padding: 0.25em 0.5em;
+  border: 1px solid var(--witness-border);
+  border-radius: 999px;
+  background: var(--witness-bg);
+  color: var(--witness-fg);
+}

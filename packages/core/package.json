@@ -1,0 +1,126 @@
+{
+  "name": "@sweberdev/witness",
+  "version": "0.0.0",
+  "description": "AI transparency kit for Article 50 of the EU AI Act: chatbot notices, AI labels in DE/EN/FR/IT, IPTC/XMP marking for images, an invisible text watermark and Vercel AI SDK middleware.",
+  "license": "MIT",
+  "author": "Seya Weber (https://github.com/sxwxbxr)",
+  "homepage": "https://packages.sweber.dev/witness/docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weber-Development/witness.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/Weber-Development/witness/issues"
+  },
+  "type": "module",
+  "sideEffects": [
+    "./dist/elements-auto.js",
+    "./dist/elements-auto.cjs",
+    "./src/elements-auto.ts",
+    "./styles.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./elements": {
+      "import": {
+        "types": "./dist/elements-auto.d.ts",
+        "default": "./dist/elements-auto.js"
+      },
+      "require": {
+        "types": "./dist/elements-auto.d.cts",
+        "default": "./dist/elements-auto.cjs"
+      }
+    },
+    "./elements/define": {
+      "import": {
+        "types": "./dist/elements.d.ts",
+        "default": "./dist/elements.js"
+      },
+      "require": {
+        "types": "./dist/elements.d.cts",
+        "default": "./dist/elements.cjs"
+      }
+    },
+    "./ai-sdk": {
+      "import": {
+        "types": "./dist/ai-sdk.d.ts",
+        "default": "./dist/ai-sdk.js"
+      },
+      "require": {
+        "types": "./dist/ai-sdk.d.cts",
+        "default": "./dist/ai-sdk.cjs"
+      }
+    },
+    "./cli": {
+      "import": {
+        "types": "./dist/cli.d.ts",
+        "default": "./dist/cli.js"
+      },
+      "require": {
+        "types": "./dist/cli.d.cts",
+        "default": "./dist/cli.cjs"
+      }
+    },
+    "./styles.css": "./styles.css",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "witness": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "styles.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "ai-act",
+    "eu-ai-act",
+    "article-50",
+    "ai-transparency",
+    "ai-label",
+    "ai-disclosure",
+    "chatbot",
+    "watermark",
+    "xmp",
+    "iptc",
+    "digital-source-type",
+    "vercel-ai-sdk",
+    "web-component"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "ai": "^7.0.127",
+    "jsdom": "^27.0.0",
+    "sharp": "^0.35.5",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.3"
+  }
+}
