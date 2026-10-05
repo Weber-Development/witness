@@ -1,0 +1,66 @@
+export {
+  createDisclosure,
+  type Disclosure,
+  type DisclosureEvent,
+  type DisclosureOptions,
+  type DisclosureStorage,
+  memoryStorage,
+} from "./disclosure.js";
+export {
+  BUILT_IN_LOCALES,
+  disclosureText,
+  format,
+  getMessages,
+  registeredLocales,
+  registerLocale,
+  resolveLocale,
+} from "./i18n.js";
+export {
+  buildXmp,
+  detectImageFormat,
+  type ImageFormat,
+  type ImageMarkingInfo,
+  type MarkImageOptions,
+  type MarkImageResult,
+  markImage,
+  readImageMarking,
+} from "./image.js";
+export {
+  createMarking,
+  escapeHtml,
+  generatorName,
+  iptcSourceType,
+  isAiSourceType,
+  type LabelHtmlOptions,
+  labelHtml,
+  labelText,
+  markingAttributes,
+  markingJsonLd,
+  markingMetaTags,
+  nextMetadata,
+  parseSourceType,
+  renderJsonLd,
+  renderMetaTags,
+  schemaOrgSourceType,
+} from "./marking.js";
+export {
+  type ContentKind,
+  DISCLOSURE_KINDS,
+  type DisclosureKind,
+  type DisclosureText,
+  type LocaleMessages,
+  type LocaleOverride,
+  type Marking,
+  type MarkingInput,
+  type SourceType,
+  type UiText,
+} from "./types.js";
+export {
+  hasTextWatermark,
+  type ReadTextWatermark,
+  readTextWatermark,
+  stripTextWatermark,
+  type TextWatermark,
+  watermarkSuffix,
+  watermarkText,
+} from "./watermark.js";

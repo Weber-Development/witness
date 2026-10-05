@@ -1,0 +1,25 @@
+{
+  "sections": [
+    {
+      "label": "Start",
+      "items": ["introduction", "getting-started", "legal/article-50"]
+    },
+    {
+      "label": "Guides",
+      "items": [
+        "guides/chatbot-notice",
+        "guides/labels",
+        "guides/images",
+        "guides/text",
+        "guides/ai-sdk",
+        "guides/react",
+        "guides/evidence",
+        "guides/cli"
+      ]
+    },
+    {
+      "label": "Reference",
+      "items": ["reference/api", "reference/locales"]
+    }
+  ]
+}
