@@ -25,13 +25,33 @@ export interface ReadTextWatermark extends TextWatermark {
   raw: string;
 }
 
+export interface WatermarkTextOptions {
+  /**
+   * Also mark the end of every paragraph (text before a blank line), so a quoted paragraph
+   * still carries the watermark. Default `false`: one watermark at the end.
+   */
+  paragraphs?: boolean;
+}
+
 /**
  * Appends an invisible watermark to `text`. An existing Witness watermark is replaced. Empty
  * text is returned unchanged.
  */
-export function watermarkText(text: string, mark: TextWatermark = {}): string {
+export function watermarkText(
+  text: string,
+  mark: TextWatermark = {},
+  options: WatermarkTextOptions = {},
+): string {
   if (text.length === 0) return text;
-  return stripTextWatermark(text) + watermarkSuffix(mark);
+  const clean = stripTextWatermark(text);
+  const suffix = watermarkSuffix(mark);
+  if (!options.paragraphs) return clean + suffix;
+  // Mark each paragraph right after its last visible character, before the blank line.
+  const marked = clean.replace(
+    /(\S)([ \t]*\r?\n[ \t]*\r?\n)/g,
+    (_: string, last: string, gap: string) => last + suffix + gap,
+  );
+  return marked.trimEnd().endsWith(suffix) ? marked : marked + suffix;
 }
 
 /**

@@ -155,3 +155,18 @@ describe("text watermark", () => {
     expect(watermarkText("", mark)).toBe("");
   });
 });
+
+describe("paragraph watermarks", () => {
+  it("marks every paragraph so a quoted paragraph keeps the mark", async () => {
+    const { watermarkText, readTextWatermark, stripTextWatermark } = await import(
+      "../src/index.js"
+    );
+    const text = "First paragraph.\n\nSecond one.\n\n\nThird.";
+    const marked = watermarkText(text, { generator: "Claude" }, { paragraphs: true });
+    const paragraphs = marked.split(/\n\s*\n/);
+    expect(paragraphs).toHaveLength(3);
+    for (const p of paragraphs) expect(readTextWatermark(p)?.generator).toBe("Claude");
+    expect(stripTextWatermark(marked)).toBe(text);
+    expect(watermarkText(marked, { generator: "Claude" }, { paragraphs: true })).toBe(marked);
+  });
+});

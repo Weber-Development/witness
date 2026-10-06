@@ -29,6 +29,7 @@ const result = streamText({ model, prompt });
 | `kind` | `generated` | |
 | `provider` | none | Your company or product |
 | `watermark` | `true` | `false` keeps only the metadata |
+| `paragraphs` | `false` | Also mark every paragraph, so a quoted paragraph keeps the mark. In streams the mark goes in at each blank line |
 | `id` | none | Function returning a reference written into the watermark |
 | `onMarked` | none | Called with `{ type, marking, partId }` |
 

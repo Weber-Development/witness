@@ -20,6 +20,7 @@ import {
   markImage,
   readImageMarking,
   WITNESS_NS,
+  withC2pa,
   xmpProperty,
 } from "./image.js";
 import { createMarking, isAiSourceType, parseSourceType } from "./marking.js";
@@ -96,7 +97,8 @@ export function readMediaMarking(bytes: Uint8Array): MediaMarkingInfo {
   if (!format || !parsed) {
     return { format, xmp: null, aiGenerated: false, witness: false, c2pa: false };
   }
-  return describe(format, parsed.xmp, parsed.c2pa);
+  const info = describe(format, parsed.xmp, parsed.c2pa);
+  return info.c2pa ? withC2pa(info, bytes) : info;
 }
 
 /** Marks an image, audio or video file, whichever it is. */
@@ -457,4 +459,51 @@ function writeU32LE(b: Uint8Array, o: number, v: number): void {
   b[o + 1] = (v >>> 8) & 0xff;
   b[o + 2] = (v >>> 16) & 0xff;
   b[o + 3] = (v >>> 24) & 0xff;
+}
+
+/** The raw JUMBF manifest store of an audio or video file, or null. @internal */
+export function mediaC2paStore(bytes: Uint8Array, format: MediaFormat): Uint8Array | null {
+  if (format === "wav") {
+    const chunk = riffChunks(bytes)?.find((c) => c.fourcc === "C2PA");
+    return chunk ? bytes.subarray(chunk.dataStart, chunk.dataEnd) : null;
+  }
+  if (format === "mp4") {
+    const box = mp4Boxes(bytes)?.find((b) => isUuidBox(bytes, b, C2PA_UUID));
+    if (!box) return null;
+    // uuid, version and flags, a NUL-terminated purpose ("manifest"), a 64-bit offset.
+    let offset = box.dataStart + 16 + 4;
+    const purposeStart = offset;
+    while (offset < box.end && bytes[offset] !== 0) offset++;
+    if (ascii(bytes, purposeStart, offset - purposeStart) !== "manifest") return null;
+    offset += 1 + 8;
+    return offset < box.end ? bytes.subarray(offset, box.end) : null;
+  }
+  const tag = readId3(bytes);
+  if (!tag || tag === "unsupported") return null;
+  for (const frame of tag.frames) {
+    if (frame.id !== "GEOB") continue;
+    // Encoding, MIME type (Latin-1), file name and description (in the frame's encoding).
+    const encoding = bytes[frame.dataStart] ?? 0;
+    const wide = encoding === 1 || encoding === 2;
+    let offset = frame.dataStart + 1;
+    const mimeStart = offset;
+    while (offset < frame.end && bytes[offset] !== 0) offset++;
+    const mime = ascii(bytes, mimeStart, offset - mimeStart);
+    offset++;
+    for (let field = 0; field < 2; field++) {
+      if (wide) {
+        while (offset + 1 < frame.end && (bytes[offset] !== 0 || bytes[offset + 1] !== 0)) {
+          offset += 2;
+        }
+        offset += 2;
+      } else {
+        while (offset < frame.end && bytes[offset] !== 0) offset++;
+        offset++;
+      }
+    }
+    if (mime.toLowerCase().includes("c2pa") && offset < frame.end) {
+      return bytes.subarray(offset, frame.end);
+    }
+  }
+  return null;
 }
