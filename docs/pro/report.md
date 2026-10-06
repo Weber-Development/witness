@@ -67,6 +67,16 @@ The delimiter (comma, semicolon or tab) is detected, so a German Excel export wo
 
 Systems with an id that is already in the register are replaced, new ones are added and the others stay; `--replace` removes systems that are not in the file. If a row is unusable, the import names its line and writes nothing. The rest of `witness.config.json` is kept. Since 0.4.
 
+### Deadline warnings
+
+`witness-report check` also looks at the key dates that apply to your systems. A date that is closer than 60 days is printed as a warning with the systems it concerns, so a CI job that runs `check` reminds you before the 2 December 2026 marking deadline:
+
+```sh
+npx witness-report check --warn-within 90 --fail-within 30
+```
+
+`--warn-within <days>` changes the warning window (default 60). `--fail-within <days>` makes `check` exit with an error when the marking deadline is that close, for teams that want the build to stop. Since 0.5.
+
 ## From uses to duties
 
 | Use | Paragraph |

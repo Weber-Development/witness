@@ -89,7 +89,7 @@ Since 0.4 the scanner verifies every C2PA manifest it finds in images, audio and
 
 1. the **claim signature** (ES256, ES384, ES512, Ed25519 or RSA-PSS) against the signer certificate in the manifest;
 2. the **assertion hashes**: every assertion the claim lists is still the one that was signed;
-3. the **file content**: the hash in `c2pa.hash.data` matches the file, so a changed image, sound or video is caught (PNG, JPEG, WebP, MP3 and WAV; MP4, MOV and M4A bind through `c2pa.hash.bmff`, which is not checked yet and is reported as such);
+3. the **file content**: the hash in `c2pa.hash.data` matches the file, so a changed image, sound or video is caught (`c2pa.hash.data` for PNG, JPEG, WebP, MP3 and WAV; `c2pa.hash.bmff` version 2 and 3 for MP4, MOV and M4A, where the top-level boxes are hashed with their offsets. A fragmented file with a Merkle tree is reported as not checked. MP4 binding since 0.5);
 4. the **certificate chain** from the signer to a trust anchor you supply, with validity dates (a manifest with a timestamp is not failed for a certificate that has expired since).
 
 Anything that does not match is the `c2pa-invalid` error. The scanner ships no trust list, because lists change: download the current C2PA trust list (or your own signer's root certificate) as PEM and point `c2pa.trustAnchors` at it. Without anchors the signer is not checked, and a file that is otherwise intact counts as unverified, not as a finding. With anchors, an intact manifest from an unknown signer is the `c2pa-untrusted` warning.
