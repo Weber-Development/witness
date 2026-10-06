@@ -22,3 +22,13 @@
 | Docs | `docs/guides/audio-video.md`, Pro scanner rules in `docs/pro/scan.md` |
 | Blog post | `content/blog/witness-0-2-0-released.md` in portfoliov3 |
 | Roadmap | `/mnt/project-files/roadmaps/witness.md` in the project files |
+
+## 0.4.0 (2026-10-06)
+
+| Item | Status |
+|---|---|
+| npm `@sweberdev/witness`, `@sweberdev/witness-react` 0.4.0 | `readC2paManifests` for validators |
+| Pro 0.4.0 | C2PA verification (signature, assertion hashes, file binding, trust anchors), single-page-app scan in a browser, register import and export as CSV |
+| Docs | `docs/pro/scan.md` (C2PA verification, single-page apps), `docs/pro/report.md` (CSV), `docs/reference/api.md` |
+| Blog post | `content/blog/witness-0-4-0-released.md` in portfoliov3 |
+| Not yet | C2PA signing (needs a signing certificate from the C2PA trust list, Seya's decision), `c2pa.hash.bmff` binding for MP4 |

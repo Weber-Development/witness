@@ -99,6 +99,82 @@ export function parseManifestStore(store: Uint8Array): C2paInfo | null {
   return info;
 }
 
+/** One assertion of a manifest, as stored. */
+export interface C2paAssertionRecord {
+  /** e.g. `c2pa.hash.data`, `c2pa.actions.v2`, `c2pa.actions__1`. */
+  label: string;
+  /** The decoded content (CBOR or JSON), if it could be decoded. */
+  data?: unknown;
+  /** The bytes C2PA hashes for this assertion: the superbox payload, without its header. */
+  hashed: Uint8Array;
+}
+
+/** One manifest of a store with everything needed to check it. */
+export interface C2paManifestRecord {
+  label: string;
+  /** The decoded claim map. */
+  claim: Record<string, unknown>;
+  /** The claim as stored, the payload of the claim signature. */
+  claimBytes: Uint8Array;
+  claimLabel: string;
+  assertions: C2paAssertionRecord[];
+  /** The COSE_Sign1 structure of the claim signature, if present. */
+  signature?: Uint8Array;
+}
+
+/**
+ * Reads the raw structure of a C2PA manifest store: claims, assertions with the bytes that are
+ * hashed, and signatures. This is the input for validation, which Witness itself does not do
+ * (see `verified` in {@link C2paInfo}).
+ */
+export function readC2paManifests(bytes: Uint8Array): C2paManifestRecord[] | null {
+  const image = detectImageFormat(bytes);
+  const media = image ? null : detectMediaFormat(bytes);
+  let store: Uint8Array | null = null;
+  try {
+    if (image) store = imageC2paStore(bytes, image);
+    else if (media) store = mediaC2paStore(bytes, media);
+    if (!store) return null;
+    const root = readBoxes(store, 0, store.length).find((box) => box.label === "c2pa");
+    if (!root) return null;
+    return root.children.filter((box) => box.type === "jumb").map(readManifestRecord);
+  } catch {
+    return null;
+  }
+}
+
+function readManifestRecord(box: Jumbf): C2paManifestRecord {
+  const claimBox = box.children.find(
+    (child) => child.label === "c2pa.claim" || child.label === "c2pa.claim.v2",
+  );
+  const claimContent = claimBox?.children.find((child) => child.type === "cbor");
+  const claim = (claimBox ? cborContent(claimBox) : undefined) as
+    | Record<string, unknown>
+    | undefined;
+  if (!claimBox || !claimContent?.data || !claim || typeof claim !== "object") {
+    throw new Error("Manifest without a readable claim");
+  }
+  const assertionsBox = box.children.find((child) => child.label === "c2pa.assertions");
+  const assertions: C2paAssertionRecord[] = [];
+  for (const assertion of assertionsBox?.children ?? []) {
+    if (!assertion.label || !assertion.payload) continue;
+    const record: C2paAssertionRecord = { label: assertion.label, hashed: assertion.payload };
+    const data = cborContent(assertion);
+    if (data !== undefined) record.data = data;
+    assertions.push(record);
+  }
+  const signatureBox = box.children.find((child) => child.label === "c2pa.signature");
+  const signature = signatureBox?.children.find((child) => child.type === "cbor")?.data;
+  return {
+    label: box.label ?? "",
+    claim,
+    claimBytes: claimContent.data,
+    claimLabel: claimBox.label ?? "c2pa.claim",
+    assertions,
+    ...(signature ? { signature } : {}),
+  };
+}
+
 function readManifest(box: Jumbf): C2paManifestInfo | null {
   const claimBox = box.children.find(
     (child) => child.label === "c2pa.claim" || child.label === "c2pa.claim.v2",
@@ -160,6 +236,8 @@ interface Jumbf {
   children: Jumbf[];
   /** Content boxes keep their payload. */
   data?: Uint8Array;
+  /** Superboxes keep the bytes between their header and their end, which C2PA hashes. */
+  payload?: Uint8Array;
 }
 
 function readBoxes(bytes: Uint8Array, start: number, end: number): Jumbf[] {
@@ -180,7 +258,11 @@ function readBoxes(bytes: Uint8Array, start: number, end: number): Jumbf[] {
     if (type === "jumb") {
       const inner = readBoxes(bytes, offset + header, boxEnd);
       const description = inner[0]?.type === "jumd" ? inner[0] : undefined;
-      const box: Jumbf = { type, children: description ? inner.slice(1) : inner };
+      const box: Jumbf = {
+        type,
+        children: description ? inner.slice(1) : inner,
+        payload: bytes.subarray(offset + header, boxEnd),
+      };
       const label = description?.data ? describeLabel(description.data) : undefined;
       if (label) box.label = label;
       boxes.push(box);
