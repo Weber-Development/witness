@@ -1,6 +1,6 @@
 {
   "name": "@sweberdev/witness",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "AI transparency kit for Article 50 of the EU AI Act: chatbot notices, AI labels in DE/EN/FR/IT, IPTC/XMP marking for images, audio and video, an invisible text watermark and Vercel AI SDK middleware.",
   "license": "MIT",
   "author": "Seya Weber (https://github.com/sxwxbxr)",
