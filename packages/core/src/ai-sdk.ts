@@ -44,6 +44,11 @@ export interface WitnessMiddlewareOptions {
   provider?: string;
   /** Append the invisible text watermark. Default `true`. */
   watermark?: boolean;
+  /**
+   * Also watermark every paragraph, so a quoted paragraph still carries the mark. In streams
+   * the mark goes in at each blank line. Default `false`: one mark at the end of each text.
+   */
+  paragraphs?: boolean;
   /** A reference written into the watermark, e.g. a log id. */
   id?: () => string;
   /** Called once per marked text part or image, e.g. to write an audit log entry. */
@@ -118,7 +123,12 @@ export function witnessMiddleware(options: WitnessMiddlewareOptions = {}) {
         }
         options.onMarked?.({ type: "text", marking });
         return watermark
-          ? { ...part, text: watermarkText(part.text, watermarkFor(marking)) }
+          ? {
+              ...part,
+              text: watermarkText(part.text, watermarkFor(marking), {
+                paragraphs: options.paragraphs ?? false,
+              }),
+            }
           : part;
       });
       return {
@@ -138,6 +148,31 @@ export function witnessMiddleware(options: WitnessMiddlewareOptions = {}) {
       const result = await doStream();
       const marking = markingFor(model);
       const withText = new Set<string>();
+      // Per text part: visible text since the last mark, and trailing whitespace held back
+      // until the next delta shows whether a paragraph ends there.
+      const pending = new Map<string, { visible: boolean; held: string }>();
+      const paragraphMarks = (id: string, delta: string): string => {
+        const state = pending.get(id) ?? { visible: false, held: "" };
+        let text = state.held + delta;
+        const tail = /\s*$/.exec(text)?.[0] ?? "";
+        state.held = tail.includes("\n") ? tail : "";
+        text = text.slice(0, text.length - state.held.length);
+        let out = "";
+        let last = 0;
+        for (const match of text.matchAll(/[ \t]*\r?\n[ \t]*\r?\n\s*/g)) {
+          const before = text.slice(last, match.index);
+          if (/\S/.test(before)) state.visible = true;
+          out += before;
+          if (state.visible) out += watermarkSuffix(watermarkFor(marking));
+          state.visible = false;
+          out += match[0];
+          last = match.index + match[0].length;
+        }
+        const rest = text.slice(last);
+        if (/\S/.test(rest)) state.visible = true;
+        pending.set(id, state);
+        return out + rest;
+      };
       const transform = new TransformStream<StreamPart, StreamPart>({
         transform(part, controller) {
           const id = part.id ?? "";
@@ -147,11 +182,23 @@ export function witnessMiddleware(options: WitnessMiddlewareOptions = {}) {
             part.delta.length > 0
           ) {
             withText.add(id);
+            if (watermark && options.paragraphs) {
+              const delta = paragraphMarks(id, part.delta);
+              if (delta) controller.enqueue({ ...part, delta });
+              return;
+            }
           }
           if (part.type === "text-end" && withText.has(id)) {
             withText.delete(id);
             options.onMarked?.({ type: "text", marking, partId: id });
-            if (watermark) {
+            const state = pending.get(id);
+            pending.delete(id);
+            if (watermark && options.paragraphs) {
+              const delta =
+                (state?.visible ? watermarkSuffix(watermarkFor(marking)) : "") +
+                (state?.held ?? "");
+              if (delta) controller.enqueue({ type: "text-delta", id, delta });
+            } else if (watermark) {
               controller.enqueue({
                 type: "text-delta",
                 id,

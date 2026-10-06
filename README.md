@@ -29,7 +29,8 @@ const model = wrapLanguageModel({ model: openai("gpt-5"), middleware: witnessMid
 - Chatbot notice for Art. 50(1), shown before the first message and kept as a compact label afterwards
 - Labels for generated, edited and deepfake content (Art. 50(4)), with a details popover
 - XMP marking for PNG, JPEG and WebP images and for MP3, WAV, MP4, MOV and M4A audio and video, without re-encoding; files with C2PA Content Credentials are left intact
-- Invisible text watermark, schema.org JSON-LD and meta tags for AI-generated text
+- Reads C2PA Content Credentials (claim generator, actions, AI source type) in all supported formats, without validating them
+- Invisible text watermark, optionally on every paragraph, schema.org JSON-LD and meta tags for AI-generated text
 - Evidence events for every notice shown and acknowledged
 - English, German, French and Italian; all 24 EU languages in Witness Pro
 

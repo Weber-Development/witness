@@ -66,6 +66,30 @@ describe("witnessMiddleware", () => {
     expect((await result.providerMetadata)?.witness).toMatchObject({ generator: "Support-Bot" });
   });
 
+  it("watermarks each paragraph of a stream when asked", async () => {
+    const model = wrapLanguageModel({
+      model: new MockLanguageModelV4({
+        doStream: {
+          stream: convertArrayToReadableStream([
+            { type: "stream-start", warnings: [] },
+            { type: "text-start", id: "t1" },
+            { type: "text-delta", id: "t1", delta: "Erster Absatz.\n" },
+            { type: "text-delta", id: "t1", delta: "\nZweiter Absatz.\n\nDritter" },
+            { type: "text-delta", id: "t1", delta: " Absatz." },
+            { type: "text-end", id: "t1" },
+            { type: "finish", finishReason, usage },
+          ]),
+        },
+      }),
+      middleware: witnessMiddleware({ generator: "Bot", paragraphs: true }),
+    });
+    const text = await streamText({ model, prompt: "Hi" }).text;
+    expect(stripTextWatermark(text)).toBe("Erster Absatz.\n\nZweiter Absatz.\n\nDritter Absatz.");
+    const paragraphs = text.split(/\n\s*\n/);
+    expect(paragraphs).toHaveLength(3);
+    for (const p of paragraphs) expect(readTextWatermark(p)?.generator).toBe("Bot");
+  });
+
   it("can skip the watermark and keep only metadata", async () => {
     const model = wrapLanguageModel({
       model: new MockLanguageModelV4({

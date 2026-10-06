@@ -1,4 +1,12 @@
 export {
+  type C2paAction,
+  type C2paInfo,
+  type C2paManifestInfo,
+  decodeCbor,
+  parseManifestStore,
+  readC2pa,
+} from "./c2pa.js";
+export {
   createDisclosure,
   type Disclosure,
   type DisclosureEvent,

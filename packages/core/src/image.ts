@@ -7,6 +7,7 @@
  * left untouched by default, because rewriting them would break the manifest's hash binding.
  */
 
+import { type C2paInfo, readC2pa } from "./c2pa.js";
 import { inflateZlib } from "./inflate.js";
 import {
   createMarking,
@@ -47,6 +48,8 @@ export interface ImageMarkingInfo {
   witness: boolean;
   /** A C2PA manifest is embedded. Witness does not verify it. */
   c2pa: boolean;
+  /** What the C2PA manifest says, when there is one Witness can read. Not verified. */
+  c2paManifest?: C2paInfo;
 }
 
 const XMP_NS = "http://ns.adobe.com/xap/1.0/\0";
@@ -109,6 +112,27 @@ export function readImageMarking(bytes: Uint8Array): ImageMarkingInfo {
   };
   if (sourceType) info.sourceType = sourceType;
   if (generator) info.generator = generator;
+  return info.c2pa ? withC2pa(info, bytes) : info;
+}
+
+/**
+ * Adds what the C2PA manifest says. XMP wins for the source type and generator; either one
+ * declaring AI makes `aiGenerated` true. @internal
+ */
+export function withC2pa<
+  T extends {
+    aiGenerated: boolean;
+    sourceType?: SourceType;
+    generator?: string;
+    c2paManifest?: C2paInfo;
+  },
+>(info: T, bytes: Uint8Array): T {
+  const manifest = readC2pa(bytes);
+  if (!manifest) return info;
+  info.c2paManifest = manifest;
+  if (manifest.aiGenerated) info.aiGenerated = true;
+  if (!info.sourceType && manifest.sourceType) info.sourceType = manifest.sourceType;
+  if (!info.generator && manifest.generator) info.generator = manifest.generator;
   return info;
 }
 
@@ -550,4 +574,36 @@ function unescapeXml(value: string): string {
     .replace(/&gt;/g, ">")
     .replace(/&apos;/g, "'")
     .replace(/&amp;/g, "&");
+}
+
+/**
+ * The raw JUMBF manifest store of an image, or null. JPEG stores split across several APP11
+ * segments are joined: each continuation segment repeats the 8-byte box header. @internal
+ */
+export function imageC2paStore(bytes: Uint8Array, format: ImageFormat): Uint8Array | null {
+  if (format === "png") {
+    const chunk = pngChunks(bytes).find((c) => c.type === "caBX");
+    return chunk ? bytes.subarray(chunk.dataStart, chunk.dataEnd) : null;
+  }
+  if (format === "webp") {
+    const chunk = webpChunks(bytes).find((c) => c.fourcc === "C2PA");
+    return chunk ? bytes.subarray(chunk.dataStart, chunk.dataStart + chunk.size) : null;
+  }
+  const parts: Uint8Array[] = [];
+  let instance: number | null = null;
+  for (const segment of jpegSegments(bytes).segments) {
+    if (segment.marker !== 0xeb || ascii(bytes, segment.dataStart, 2) !== "JP") continue;
+    const box = segment.dataStart + 8;
+    if (ascii(bytes, box + 4, 4) !== "jumb") continue;
+    const en = readU16BE(bytes, segment.dataStart + 2);
+    if (instance === null) {
+      if (!ascii(bytes, box, Math.min(64, segment.end - box)).includes("c2pa")) continue;
+      instance = en;
+      parts.push(bytes.subarray(box, segment.end));
+    } else if (en === instance) {
+      const header = readU32BE(bytes, box) === 1 ? 16 : 8;
+      parts.push(bytes.subarray(box + header, segment.end));
+    }
+  }
+  return parts.length > 0 ? concat(...parts) : null;
 }

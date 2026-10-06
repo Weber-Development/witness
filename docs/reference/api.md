@@ -30,6 +30,7 @@ description: Every export of @sweberdev/witness.
 | `readMediaMarking(bytes)` | The same shape as `readImageMarking` |
 | `markFile(bytes, marking?, { c2pa })` / `readMarking(bytes)` | Detect image, audio or video and call the matching function |
 | `detectMediaFormat(bytes)` | `mp3`, `wav`, `mp4` or `null` |
+| `readC2pa(bytes)` | What the C2PA manifest of an image, audio or video file says: `{ active, manifests, aiGenerated, aiInHistory, sourceType, generator, verified: false }` or `null`. Not validated |
 | `detectImageFormat(bytes)` | `png`, `jpeg`, `webp` or `null` |
 | `buildXmp(marking, existing?)` | The XMP packet |
 
@@ -37,7 +38,7 @@ description: Every export of @sweberdev/witness.
 
 | Function | |
 |---|---|
-| `watermarkText(text, { generator, createdAt, id })` | Appends the invisible watermark, replacing an existing one |
+| `watermarkText(text, { generator, createdAt, id }, { paragraphs })` | Appends the invisible watermark, replacing an existing one; `paragraphs: true` also marks every paragraph |
 | `watermarkSuffix(mark)` | Only the invisible characters, for streams |
 | `readTextWatermark(text)` | `{ generator, createdAt, id, raw }` or `null` |
 | `hasTextWatermark(text)`, `stripTextWatermark(text)` | |

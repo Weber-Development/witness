@@ -132,7 +132,11 @@ async function inspect(argv: string[], io: CliIo): Promise<number> {
             ? `source type ${iptcSourceType(info.sourceType)}`
             : "no IPTC source type",
           info.generator ? `generator ${info.generator}` : null,
-          info.c2pa ? "C2PA manifest present (not verified)" : null,
+          info.c2paManifest
+            ? `C2PA manifest by ${info.c2paManifest.active.claimGenerator ?? "unknown"}${info.c2paManifest.aiGenerated ? " declaring AI" : info.c2paManifest.aiInHistory ? ", AI in its history" : ""} (not verified)`
+            : info.c2pa
+              ? "C2PA manifest present (not verified)"
+              : null,
           marked ? "AI-marked" : "NOT AI-marked",
         ];
         io.out(parts.filter(Boolean).join(", "));
