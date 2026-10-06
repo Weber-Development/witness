@@ -54,7 +54,7 @@ readC2pa(bytes);
 
 `readC2pa` works for every format Witness knows: PNG, JPEG (also stores split over several segments), WebP, MP3, WAV and MP4. `aiGenerated` looks at the active manifest; `aiInHistory` is also true when an earlier manifest, for example of the original before an edit, declares AI.
 
-Witness reads the manifest, it does not validate it: the signature, the certificate chain and the hash binding are not checked, and `verified` is always `false`. Treat the result as what the file claims. For validation use c2patool or a C2PA SDK, or the [Pro scanner](../pro/scan.md#c2pa-verification), which checks signature, assertion hashes, file content and signer for every manifest in a build.
+Witness reads the manifest, it does not validate it: the signature, the certificate chain and the hash binding are not checked, and `verified` is always `false`. Treat the result as what the file claims. For validation use c2patool or a C2PA SDK, or the [Pro scanner](../pro/scan.md#c2pa-verification), which checks signature, assertion hashes, file content and signer for every manifest in a build. To create a manifest for your own generated files, use [`witness-sign`](../pro/sign.md).
 
 ## Limits
 

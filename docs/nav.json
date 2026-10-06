@@ -20,7 +20,7 @@
     },
     {
       "label": "Pro",
-      "items": ["pro/overview", "pro/locales", "pro/scan", "pro/report"]
+      "items": ["pro/overview", "pro/locales", "pro/scan", "pro/report", "pro/sign"]
     },
     {
       "label": "Reference",
