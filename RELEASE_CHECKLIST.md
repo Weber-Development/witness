@@ -40,7 +40,7 @@
 | Pro 0.4.0 | C2PA verification (signature, assertion hashes, file binding, trust anchors), single-page-app scan in a browser, register import and export as CSV |
 | Docs | `docs/pro/scan.md` (C2PA verification, single-page apps), `docs/pro/report.md` (CSV), `docs/reference/api.md` |
 | Blog post | `content/blog/witness-0-4-0-released.md` in portfoliov3 |
-| Not yet | C2PA signing (needs a signing certificate from the C2PA trust list, Seya's decision), `c2pa.hash.bmff` binding for MP4 |
+| Not yet | superseded by 0.5.0 and 0.6.0 below |
 
 ## 0.5.0 (2026-10-06, Pro only)
 
@@ -51,3 +51,15 @@
 | Docs | `docs/pro/scan.md`, `docs/pro/report.md` |
 | Blog post | `content/blog/witness-0-5-0-released.md` in portfoliov3 |
 | Dropped from the plan | speech middleware: the AI SDK has no speech middleware yet; marking `generateSpeech` output stays a documented `markMedia` call |
+
+## 0.6.0 (2026-10-06, Pro only)
+
+| Item | Status |
+|---|---|
+| Free | unchanged at 0.4.0 |
+| Pro 0.6.0 | new package `witness-sign`: `signC2pa` and CLI `witness-sign` sign PNG, JPEG, WebP, WAV, MP4/MOV/M4A with the customer's certificate (ES256/384/512, Ed25519, RSA-PSS) |
+| Checked against | `verifyC2pa` (tests for every format and key type) and the c2pa-rs reference reader (valid; only "signer untrusted" with a test CA) |
+| Docs | `docs/pro/sign.md` |
+| Blog post | `content/blog/witness-0-6-0-released.md` in portfoliov3 |
+| Open for Seya (optional) | a trust-list certificate only if the demo should sign as sweber.dev; customers use their own |
+| Not yet | MP3, replacing or extending existing manifests, signed timestamp (TSA), AI SDK middleware |
