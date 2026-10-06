@@ -22,3 +22,12 @@
 | Docs | `docs/guides/audio-video.md`, Pro scanner rules in `docs/pro/scan.md` |
 | Blog post | `content/blog/witness-0-2-0-released.md` in portfoliov3 |
 | Roadmap | `/mnt/project-files/roadmaps/witness.md` in the project files |
+
+## 0.3.0 (2026-10-06)
+
+| Item | Status |
+|---|---|
+| npm `@sweberdev/witness`, `@sweberdev/witness-react` 0.3.0 | published (C2PA reading, paragraph watermarks) |
+| Pro 0.3.0 (C2PA-declared AI in the scanner, key dates in the report) | `Weber-Development/witness-pro` PR #6, then the version PR and the dist release |
+| Docs | C2PA section in `docs/guides/images.md`, paragraphs in `docs/guides/text.md` and `docs/guides/ai-sdk.md`, Pro pages |
+| Blog post | `content/blog/witness-0-3-0-released.md` in portfoliov3 |

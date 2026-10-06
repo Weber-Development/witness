@@ -24,6 +24,8 @@ npx witness-scan out --json witness-scan.json
 
 A label counts as "next to" an image when it sits in the same marked block, the same `<figure>`, the parent of a `<picture>` or the image's direct parent. Broad containers such as `<main>` or `<body>` do not count, so an unrelated label elsewhere on the page does not hide a finding.
 
+Since 0.3 an image, audio or video file counts as AI content when its XMP **or** its C2PA manifest declares a trained AI model as the source (read with [`readC2pa`](../guides/images.md#c2pa), not validated). Files from generators that embed Content Credentials therefore also need a label next to them; the finding names the C2PA manifest as the source.
+
 ## Configuration
 
 The `scan` section of `witness.config.json`:
