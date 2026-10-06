@@ -63,3 +63,13 @@
 | Blog post | `content/blog/witness-0-6-0-released.md` in portfoliov3 |
 | Open for Seya (optional) | a trust-list certificate only if the demo should sign as sweber.dev; customers use their own |
 | Not yet | MP3, replacing or extending existing manifests, signed timestamp (TSA), AI SDK middleware |
+
+## 0.7.0 (2026-10-06, Pro only)
+
+| Item | Status |
+|---|---|
+| Free | unchanged at 0.4.0 |
+| Pro 0.7.0 | scanner reports `aiPages`; `witness-report suggest` drafts systems for uncovered AI use, `history record/show` change log, `check --scan/--history` warnings, change log in the client report (4 languages), print rules for PDF |
+| Docs | `docs/pro/report.md`, `docs/pro/scan.md` |
+| Blog post | `content/blog/witness-0-7-0-released.md` in portfoliov3 |
+| Not yet | example projects (Next.js, Astro, Vite), legal-status mechanism (0.8.0) |

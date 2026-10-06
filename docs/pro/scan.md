@@ -67,7 +67,7 @@ The `scan` section of `witness.config.json`:
 | Option | Meaning |
 |---|---|
 | `--config <file>` | Config file. Default `witness.config.json`. |
-| `--json <file>` | Write the full report as JSON, the input for `witness-report`. |
+| `--json <file>` | Write the full report as JSON, the input for `witness-report`. It lists the pages with AI use (`aiPages`), which `witness-report suggest` compares with your register. |
 | `--markdown <file>` | Write a Markdown summary. |
 | `--fail-on <level>` | `error` (default), `warning` or `never`. |
 | `--quiet` | Print only findings. |

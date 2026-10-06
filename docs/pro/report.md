@@ -104,6 +104,31 @@ The dates follow [What Article 50 asks](../legal/article-50.md). Set `since` for
 
 Pass the events your site collected (see [Keeping evidence](../guides/evidence.md)) as newline-delimited JSON with `--events`. The report counts shown and acknowledged notices per id and version, with the first and last date. Pass the JSON from [`witness-scan`](scan.md) with `--scan` to add the automated check and its findings.
 
+## Finding what the register misses
+
+`witness-scan` records the pages where it found AI use (a chatbot notice, an element marked as AI-generated, an AI image or media file shown) as `aiPages` in its JSON report. Compare them with the pages your register names:
+
+```sh
+npx witness-report suggest --scan witness-scan.json
+npx witness-report suggest --scan witness-scan.json --write
+```
+
+For every page and kind of use that no system names, you get a draft system (`suggested-generated-image` and so on) with the pages filled in. `--write` adds the drafts to the register. Complete the purpose, role and vendor yourself; the drafts are a starting point, not an assessment. `witness-report check --scan witness-scan.json` prints a warning for each uncovered page, so a CI job notices new AI use.
+
+The scan sees what is on the page. It cannot tell that a text was written by a model unless you mark it with `data-ai-generated` or the Witness watermark, so a register can still be incomplete.
+
+## Change log
+
+```sh
+npx witness-report history record --note "Added the image generator"
+npx witness-report history show
+npx witness-report build --history witness.register-history.json --out reports/ai-report.html
+```
+
+`history record` compares the register with the state at the last record and writes what was added, removed or changed (with the names of the fields) to `witness.register-history.json`, with your note. Nothing is written when nothing changed. `check --history` warns when the register changed since the last record, and `build --history` adds the log to the client report in the report language. Commit the history file next to the register.
+
+The HTML report has print rules: print it from the browser and choose "Save as PDF" for a document to hand to a client.
+
 ## CLI
 
 | Option | Meaning |
@@ -113,6 +138,9 @@ Pass the events your site collected (see [Keeping evidence](../guides/evidence.m
 | `--out <file>` | Output file. `.md` writes Markdown, anything else HTML. Default: standard output. |
 | `--scan <file>` | JSON report from `witness-scan` (`build` only). |
 | `--events <file>` | Notice events, one JSON object per line (`build` only). |
+| `--history <file>` | Change log file. Default for `history`: `witness.register-history.json`. |
+| `--note <text>` | `history record`: a note for the entry. |
+| `--write` | `suggest`: add the drafts to the register. |
 | `--show-vendors` | List vendor and model on the public page. |
 | `--fragment` | Public page without the `<html>` wrapper, for your own layout. |
 
