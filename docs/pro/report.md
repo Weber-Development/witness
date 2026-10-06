@@ -79,6 +79,17 @@ Systems with an id that is already in the register are replaced, new ones are ad
 
 This mapping is a sorting aid for your documentation, not a legal assessment. A system can have duties the register does not capture, for example under other parts of the AI Act or the GDPR.
 
+## Key dates
+
+Since 0.3 the report lists the dates that matter for the systems in the register, with the days left from the report date:
+
+| Date | What applies | Systems listed |
+|---|---|---|
+| 2 August 2026 | Article 50 applies | every system with at least one duty |
+| 2 December 2026 | End of the grace period for machine-readable marking (Art. 50(2)) | providers of generative systems whose `since` is before 2 August 2026, or who have no `since` |
+
+The dates follow [What Article 50 asks](../legal/article-50.md). Set `since` for each system so the report can tell whether the grace period applies.
+
 ## Evidence
 
 Pass the events your site collected (see [Keeping evidence](../guides/evidence.md)) as newline-delimited JSON with `--events`. The report counts shown and acknowledged notices per id and version, with the first and last date. Pass the JSON from [`witness-scan`](scan.md) with `--scan` to add the automated check and its findings.

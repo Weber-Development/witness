@@ -26,6 +26,8 @@ npx witness-scan out --json witness-scan.json
 
 A label counts as "next to" an image when it sits in the same marked block, the same `<figure>`, the parent of a `<picture>` or the image's direct parent. Broad containers such as `<main>` or `<body>` do not count, so an unrelated label elsewhere on the page does not hide a finding.
 
+Since 0.3 an image, audio or video file counts as AI content when its XMP **or** its C2PA manifest declares a trained AI model as the source (read with [`readC2pa`](../guides/images.md#c2pa), not validated). Files from generators that embed Content Credentials therefore also need a label next to them; the finding names the C2PA manifest as the source.
+
 ## Configuration
 
 The `scan` section of `witness.config.json`:
@@ -100,7 +102,7 @@ verifyC2pa(bytes, { trustAnchors: [pem] });
 //   signer: { subject, issuer, notAfter }, manifests, problems: [] }
 ```
 
-Verification tells you the manifest is authentic and belongs to the file. It does not tell you that the claims in it are true, and it does not replace a full C2PA validator for ingredient manifests: older manifests of an edited file are read, the active one is verified.
+Verification tells you the manifest is intact and belongs to this file, and with trust anchors who signed it. It does not tell you that the claims in it are true, and it does not replace a full C2PA validator for ingredient manifests: older manifests of an edited file are read, the active one is verified.
 
 ## Single-page apps
 
