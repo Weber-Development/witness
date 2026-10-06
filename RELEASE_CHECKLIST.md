@@ -41,3 +41,13 @@
 | Docs | `docs/pro/scan.md` (C2PA verification, single-page apps), `docs/pro/report.md` (CSV), `docs/reference/api.md` |
 | Blog post | `content/blog/witness-0-4-0-released.md` in portfoliov3 |
 | Not yet | C2PA signing (needs a signing certificate from the C2PA trust list, Seya's decision), `c2pa.hash.bmff` binding for MP4 |
+
+## 0.5.0 (2026-10-06, Pro only)
+
+| Item | Status |
+|---|---|
+| Free | unchanged at 0.4.0 |
+| Pro 0.5.0 | scanner verifies the file binding of MP4, MOV and M4A (`c2pa.hash.bmff` v2/v3); `witness-report check` warns about key dates (`--warn-within`, `--fail-within`) |
+| Docs | `docs/pro/scan.md`, `docs/pro/report.md` |
+| Blog post | `content/blog/witness-0-5-0-released.md` in portfoliov3 |
+| Dropped from the plan | speech middleware: the AI SDK has no speech middleware yet; marking `generateSpeech` output stays a documented `markMedia` call |
