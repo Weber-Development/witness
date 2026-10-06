@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   decodeCbor,
   readC2pa,
+  readC2paManifests,
   readImageMarking,
   readMarking,
   readMediaMarking,
@@ -85,5 +86,22 @@ describe("decodeCbor", () => {
       0x00,
     ]);
     expect(decodeCbor(bytes)).toEqual({ a: [1, -2, "x", new Uint8Array([1, 2]), true, null, 1.5] });
+  });
+});
+
+describe("readC2paManifests", () => {
+  it("returns claim, hashed assertion bytes and the signature", () => {
+    const manifests = readC2paManifests(fixture("signed.jpg"));
+    expect(manifests).toHaveLength(1);
+    const [manifest] = manifests ?? [];
+    expect(manifest?.claimLabel).toMatch(/^c2pa\.claim/);
+    expect(manifest?.claimBytes.length).toBeGreaterThan(10);
+    expect(manifest?.signature?.length).toBeGreaterThan(100);
+    expect(manifest?.assertions.some((a) => a.label === "c2pa.hash.data")).toBe(true);
+    expect(manifest?.assertions.every((a) => a.hashed.length > 0)).toBe(true);
+  });
+
+  it("returns null without a manifest", () => {
+    expect(readC2paManifests(new Uint8Array([1, 2, 3]))).toBeNull();
   });
 });

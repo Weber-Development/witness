@@ -1,10 +1,13 @@
 export {
   type C2paAction,
+  type C2paAssertionRecord,
   type C2paInfo,
   type C2paManifestInfo,
+  type C2paManifestRecord,
   decodeCbor,
   parseManifestStore,
   readC2pa,
+  readC2paManifests,
 } from "./c2pa.js";
 export {
   createDisclosure,

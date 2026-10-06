@@ -53,6 +53,20 @@ The `register` section of `witness.config.json`:
 | `humanReview` | A person reviews generated text before publication and holds editorial responsibility. |
 | `pages`, `since`, `measures`, `owner` | Optional details for the report. `owner` is never shown on the public page. |
 
+### Import from a spreadsheet
+
+Most teams start with a spreadsheet. Export it as CSV and import it into the register:
+
+```sh
+npx witness-report import systems.csv --dry-run
+npx witness-report import systems.csv
+npx witness-report export --out systems.csv
+```
+
+The delimiter (comma, semicolon or tab) is detected, so a German Excel export works as it is. Columns: `id`, `name`, `purpose`, `vendor`, `model`, `role`, `uses`, `humanReview`, `pages`, `since`, `measures`, `owner`; German headings such as `System`, `Zweck`, `Anbieter`, `Modell`, `Rolle`, `Verwendung`, `Seiten`, `Seit`, `Massnahmen` are understood, and `role` accepts `Anbieter` and `Betreiber`. Several values in one cell (uses, pages, measures) are separated by `|` or `;`. A row without an id gets one made from its name.
+
+Systems with an id that is already in the register are replaced, new ones are added and the others stay; `--replace` removes systems that are not in the file. If a row is unusable, the import names its line and writes nothing. The rest of `witness.config.json` is kept. Since 0.4.
+
 ## From uses to duties
 
 | Use | Paragraph |
