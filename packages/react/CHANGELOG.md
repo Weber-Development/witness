@@ -1,5 +1,12 @@
 # @sweberdev/witness-react
 
+## 0.3.0
+
+### Patch Changes
+
+- Updated dependencies [7ac5b5f]
+  - @sweberdev/witness@0.3.0
+
 ## 0.2.0
 
 ### Patch Changes
