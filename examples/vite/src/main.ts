@@ -1,6 +1,11 @@
 import "@sweberdev/witness/elements";
 import "@sweberdev/witness/styles.css";
-import { createMarking, type DisclosureEvent, labelHtml, markingAttributes } from "@sweberdev/witness";
+import {
+  createMarking,
+  type DisclosureEvent,
+  labelHtml,
+  markingAttributes,
+} from "@sweberdev/witness";
 
 // Article 50(1): tell people they are talking to an AI before the first message.
 // The acknowledgement is remembered; `witness-shown` and `witness-acknowledged` are your evidence.
