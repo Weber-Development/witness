@@ -1,5 +1,11 @@
 # @sweberdev/witness-react
 
+## 0.9.0
+
+### Minor Changes
+
+- Release candidate for 1.0.0. The API is frozen: every export, element, attribute and event on the reference pages is covered by [semantic versioning](docs/reference/stability.md) from here on. New in this release line since 0.5.1: the complete API reference, the stability policy, browser tests in Chromium, coverage thresholds and a Vite example. Free and Pro move to 0.9.0 together.
+
 ## 0.5.1
 
 ### Patch Changes

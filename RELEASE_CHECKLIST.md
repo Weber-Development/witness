@@ -84,3 +84,12 @@
 | Blog post | `content/blog/witness-0-8-0-released.md` in portfoliov3 |
 | Promise to settle with Seya | how often the legal status is maintained (currently: when a Pro release is made after a change); not stated on the page |
 | Not yet | example projects (Next.js, Astro, Vite) |
+
+## 0.9.0 (2026-10-07, release candidate for 1.0.0)
+
+| What | State |
+|---|---|
+| Free 0.9.0 | versions set by hand (no changeset) so free and Pro share the number; API frozen, see `docs/reference/stability.md` |
+| Pro 0.9.0 | `@sweberdev/witness` range widened to `^0.9.0 \|\| ^1.0.0` in scan and sign |
+| Blog post | `content/blog/witness-0-9-0-released.md` in portfoliov3 |
+| Open for 1.0.0 (Seya) | trademark check "Witness", legal review of the Art. 50 summary and the Pro translations |
