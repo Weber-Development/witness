@@ -1,6 +1,6 @@
 {
   "name": "@sweberdev/witness-react",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "React components for Witness: chatbot AI notice, AI labels and marked content blocks for Article 50 of the EU AI Act.",
   "license": "MIT",
   "author": "Seya Weber (https://github.com/sxwxbxr)",
