@@ -332,6 +332,7 @@ const PLAYER_CSS = `
 :host { display: block; position: relative; }
 :host([hidden]) { display: none; }
 .frame { position: relative; display: block; }
+.frame.video { display: inline-block; max-width: 100%; vertical-align: top; }
 .bar { display: block; margin-block-end: .5em; }
 ::slotted(video), ::slotted(audio) { display: block; max-width: 100%; }
 `;
@@ -375,7 +376,7 @@ export class WitnessPlayerElement extends BaseElement {
     const video = this.querySelector("video") !== null;
     label.setAttribute("variant", video ? "overlay" : "inline");
     const slot = h(doc, "slot", {});
-    const frame = h(doc, "div", { class: "frame" });
+    const frame = h(doc, "div", { class: video ? "frame video" : "frame" });
     if (video) frame.append(slot, label);
     else {
       const bar = h(doc, "div", { class: "bar" });

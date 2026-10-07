@@ -23,4 +23,7 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm --filter @sweberdev/witness test:coverage
+      - run: pnpm --filter @sweberdev/witness exec playwright-core install chromium
+      - run: pnpm --filter @sweberdev/witness test:browser
       - run: pnpm check:packages
