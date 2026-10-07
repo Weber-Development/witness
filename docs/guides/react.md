@@ -1,6 +1,6 @@
 ---
 title: React
-description: AiNotice, AiLabel, AiContent and useAiDisclosure from @sweberdev/witness-react.
+description: AiNotice, AiLabel, AiContent, AiPlayer and useAiDisclosure from @sweberdev/witness-react.
 ---
 
 ```sh
@@ -27,6 +27,7 @@ export function Chat() {
 | `AiNotice` | The chatbot notice. Props like the [element](chatbot-notice.md): `kind`, `id`, `version`, `href`, `storage`, `onEvent`, `children` |
 | `AiLabel` | The badge with details. `kind`, `generator`, `generatorVersion`, `createdAt`, `reviewed`, `href`, `variant` |
 | `AiContent` | Wraps content with `data-ai-*` attributes and a label. `marking`, `as`, `labelPosition` (`top`, `bottom`, `overlay`, `none`) |
+| `AiPlayer` | Wraps an `<audio>` or `<video>` with a label that stays visible. `marking`, `media` (`video` overlay, `audio` above the controls) |
 | `useAiDisclosure` | State for your own notice UI |
 | `useWitnessMessages` | The active wording |
 

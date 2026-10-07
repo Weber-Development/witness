@@ -2,4 +2,9 @@ import { defineWitnessElements } from "./elements.js";
 
 defineWitnessElements();
 
-export { defineWitnessElements, WitnessLabelElement, WitnessNoticeElement } from "./elements.js";
+export {
+  defineWitnessElements,
+  WitnessLabelElement,
+  WitnessNoticeElement,
+  WitnessPlayerElement,
+} from "./elements.js";

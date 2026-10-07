@@ -54,6 +54,26 @@ const { audio } = await generateSpeech({ model, text });
 const { bytes } = markMedia(audio.uint8Array, { generator: "tts-model" });
 ```
 
+## A visible label next to the player
+
+The XMP marking is for machines. For deepfake audio and video, Article 50(4) also asks for a disclosure people can see. `<witness-player>` wraps the media element and keeps the label with it: an overlay in the corner of a video, a bar above the controls of an audio player.
+
+```html
+<witness-player kind="deepfake" generator="video-model" href="/ki">
+  <video src="clip.mp4" controls></video>
+</witness-player>
+```
+
+It takes the attributes of [`<witness-label>`](labels.md) (`kind`, `locale`, `generator`, `created`, `reviewed`, `href`). With `kind="deepfake"` the label reads "Artificially generated" in the page language. In React use `AiPlayer`:
+
+```tsx
+<AiPlayer marking={{ kind: "deepfake", generator: "video-model" }} media="video">
+  <video src="clip.mp4" controls />
+</AiPlayer>
+```
+
+The label is there for as long as the player is on the page. Witness does not decide whether content counts as a deepfake or whether an exception applies; see [Article 50 in brief](../legal/article-50.md). The [Pro scanner](../pro/scan.md) accepts `<witness-player>` as the visible label of the media it wraps.
+
 ## C2PA and limits
 
 Files that carry a C2PA manifest (a `uuid` box in MP4, a `C2PA` chunk in WAV, a `GEOB` frame in MP3) are returned unchanged with `status: "skipped-c2pa"`, as for images. Pass `{ c2pa: "overwrite" }` only if you do not need the manifest.

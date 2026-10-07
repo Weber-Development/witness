@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AiContent, AiLabel, AiNotice, WitnessProvider } from "../src/index.js";
+import { AiContent, AiLabel, AiNotice, AiPlayer, WitnessProvider } from "../src/index.js";
 
 beforeEach(() => {
   localStorage.clear();
@@ -86,5 +86,19 @@ describe("AiContent", () => {
     );
     expect((container.firstChild as HTMLElement).style.position).toBe("relative");
     expect(container.textContent).toContain("AI-edited");
+  });
+});
+
+describe("AiPlayer", () => {
+  it("wraps the media and shows the label over a video", () => {
+    const { container } = render(
+      <AiPlayer marking={{ kind: "deepfake", generator: "video-model" }} locale="en">
+        {/* biome-ignore lint/a11y/useMediaCaption: test fixture */}
+        <video src="a.mp4" />
+      </AiPlayer>,
+    );
+    expect(container.querySelector("[data-ai-generated]")).not.toBeNull();
+    expect(container.querySelector(".witness-badge--overlay")).not.toBeNull();
+    expect(container.querySelector("video")).not.toBeNull();
   });
 });
