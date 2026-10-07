@@ -1,5 +1,11 @@
 # @sweberdev/witness
 
+## 0.5.0
+
+### Minor Changes
+
+- 7485685: `<witness-player>` and `AiPlayer`: wrap an `<audio>` or `<video>` with the AI label that has to stay visible for deepfake content (Art. 50(4)), as an overlay on video and above the controls on audio.
+
 ## 0.4.0
 
 ### Minor Changes
