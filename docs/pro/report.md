@@ -100,6 +100,17 @@ Since 0.3 the report lists the dates that matter for the systems in the register
 
 The dates follow [What Article 50 asks](../legal/article-50.md). Set `since` for each system so the report can tell whether the grace period applies.
 
+## Legal status
+
+Article 50 and the texts around it are still moving. Witness Pro keeps a changelog of the legal wording and dates it works with, the *legal status*, named by a version such as `2026-10`. The client report says which status it follows, and lists what changed since your register was last reviewed:
+
+```sh
+npx witness-report legal            # what changed since the register was last reviewed
+npx witness-report legal --accept   # record the current status in the register
+```
+
+`--accept` writes `legalStatus` into the register. After that `witness-report check` prints a warning whenever a newer Witness release has a newer status, so a CI job tells you to read the changes. When the law or the Commission's guidance changes in a way that affects the wording or dates Witness uses, a Pro release adds an entry and bumps the status. The entries are a changelog of what Witness does, not legal advice, and a new entry does not tell you what your own duties are.
+
 ## Evidence
 
 Pass the events your site collected (see [Keeping evidence](../guides/evidence.md)) as newline-delimited JSON with `--events`. The report counts shown and acknowledged notices per id and version, with the first and last date. Pass the JSON from [`witness-scan`](scan.md) with `--scan` to add the automated check and its findings.

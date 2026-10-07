@@ -73,3 +73,14 @@
 | Docs | `docs/pro/report.md`, `docs/pro/scan.md` |
 | Blog post | `content/blog/witness-0-7-0-released.md` in portfoliov3 |
 | Not yet | example projects (Next.js, Astro, Vite), legal-status mechanism (0.8.0) |
+
+## 0.8.0 (2026-10-07)
+
+| Item | Status |
+|---|---|
+| Free 0.5.0 | `<witness-player>` and `AiPlayer`: visible label with audio and video (Art. 50(4)) |
+| Pro 0.8.0 | legal status changelog (`LEGAL_CHANGES`, `witness-report legal`, `legalStatus` in the register, report section in four languages); scanner accepts `<witness-player>` |
+| Docs | `docs/guides/audio-video.md`, `docs/guides/react.md`, `docs/reference/api.md`, `docs/pro/report.md`, `docs/pro/scan.md` |
+| Blog post | `content/blog/witness-0-8-0-released.md` in portfoliov3 |
+| Promise to settle with Seya | how often the legal status is maintained (currently: when a Pro release is made after a change); not stated on the page |
+| Not yet | example projects (Next.js, Astro, Vite) |
