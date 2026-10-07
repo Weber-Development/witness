@@ -58,7 +58,7 @@ The `scan` section of `witness.config.json`:
 | `aiText` | `[]` | Text files that must carry the Witness watermark. |
 | `c2pa` | verify on | `verify: false` turns C2PA verification off. `trustAnchors` lists PEM files with the certificates you trust ([details](#c2pa-verification)). |
 | `render` | off | Routes of a single-page app to render in a browser first ([details](#single-page-apps)). |
-| `labelSelectors` | `witness-label`, `.witness-label`, `[data-ai-label]` | What counts as a visible label. Add your own badge class here. |
+| `labelSelectors` | `witness-label`, `witness-player`, `.witness-label`, `[data-ai-label]` | What counts as a visible label. Add your own badge class here. Audio or video inside a `<witness-player>` always counts as labelled. |
 | `noticeSelectors` | `witness-notice`, `.witness-notice`, `[data-ai-notice]` | What counts as a chatbot notice. |
 | `rules` | | Per rule `error`, `warning` or `off`. |
 
