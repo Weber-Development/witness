@@ -24,7 +24,7 @@
     },
     {
       "label": "Reference",
-      "items": ["reference/api", "reference/locales"]
+      "items": ["reference/api", "reference/pro-api", "reference/locales", "reference/stability"]
     }
   ]
 }

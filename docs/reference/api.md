@@ -1,6 +1,6 @@
 ---
 title: API
-description: Every export of @sweberdev/witness.
+description: Every export of @sweberdev/witness, and the React package.
 ---
 
 ## `@sweberdev/witness`
@@ -52,9 +52,27 @@ description: Every export of @sweberdev/witness.
 
 `getMessages(locale, override?)`, `disclosureText(kind, locale, override?)`, `resolveLocale(tags)`, `registerLocale(code, messages)`, `registeredLocales()`, `format(template, values)`, `BUILT_IN_LOCALES`, `DISCLOSURE_KINDS`.
 
+### Types
+
+| Type | Used for |
+|---|---|
+| `Marking`, `MarkingInput`, `MarkingInfo` | The complete marking, what you pass to `createMarking`, and what `readMarking` returns |
+| `ContentKind` | `generated`, `edited` or `deepfake` |
+| `DisclosureKind` | `ContentKind` plus `chatbot`, `emotion-recognition` and `biometric-categorisation` |
+| `DisclosureOptions`, `DisclosureEvent`, `DisclosureStorage` | Arguments and events of `createDisclosure`; `DisclosureStorage` is `getItem`, `setItem`, `removeItem` |
+| `LabelHtmlOptions` | Options of `labelHtml` and `labelText` |
+| `MarkImageOptions`, `MarkMediaOptions` | `{ c2pa: "skip" | "overwrite" }` |
+| `MarkImageResult`, `MarkMediaResult`, `MarkFileResult` | `{ bytes, status, format }` |
+| `ImageMarkingInfo`, `MediaMarkingInfo` | What `readImageMarking` and `readMediaMarking` return |
+| `C2paInfo`, `C2paManifestInfo`, `C2paAction` | What `readC2pa` returns |
+| `C2paManifestRecord`, `C2paAssertionRecord` | The raw structure `readC2paManifests` returns |
+| `LocaleMessages`, `DisclosureText`, `UiText`, `LocaleOverride` | Wording: the full set of texts per language and a partial override |
+
+`@sweberdev/witness` also exports `decodeCbor`, `parseManifestStore`, `escapeHtml` and `generatorName`. They are helpers shared with the Pro packages and are not covered by [semantic versioning](stability.md).
+
 ## `@sweberdev/witness/elements`
 
-Registers `<witness-notice>`, `<witness-label>` and `<witness-player>`. `@sweberdev/witness/elements/define` exports the classes and `defineWitnessElements()` without registering.
+Registers `<witness-notice>`, `<witness-label>` and `<witness-player>` (see [Labels](../guides/labels.md) and [Audio and video](../guides/audio-video.md)). `@sweberdev/witness/elements/define` exports the classes and `defineWitnessElements()` without registering.
 
 ## `@sweberdev/witness/ai-sdk`
 
@@ -63,3 +81,16 @@ Registers `<witness-notice>`, `<witness-label>` and `<witness-player>`. `@sweber
 ## `@sweberdev/witness/styles.css`
 
 Styles for `labelHtml` output and the React components.
+
+## `@sweberdev/witness-react`
+
+| Export | |
+|---|---|
+| `AiNotice`, `AiNoticeProps` | The chatbot notice |
+| `AiLabel`, `AiLabelProps` | A badge with a details panel; `variant` `inline` or `overlay` |
+| `AiContent`, `AiContentProps` | Wraps content with the `data-ai-*` attributes and a label |
+| `AiPlayer`, `AiPlayerProps` | Wraps an `<audio>` or `<video>` with a label that stays visible; `media` `video` or `audio` |
+| `WitnessProvider`, `WitnessProviderProps`, `useWitnessMessages` | Default locale and wording overrides for the components below it |
+| `useAiDisclosure`, `UseAiDisclosureResult` | The disclosure state as a hook |
+
+Props and examples: [React](../guides/react.md).
