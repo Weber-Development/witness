@@ -4,6 +4,8 @@
  * - `<witness-notice>`: the chatbot notice (Art. 50(1)). Expanded until acknowledged, then a
  *   compact label that can be reopened.
  * - `<witness-label>`: a badge for AI-generated or AI-edited content with a details popover.
+ * - `<witness-player>`: wraps an `<audio>` or `<video>` and shows the label with it, as an overlay
+ *   on video and above the controls on audio (Art. 50(4) for deepfakes).
  *
  * Import `@sweberdev/witness/elements` to register both, or call `defineWitnessElements()`.
  */
@@ -326,6 +328,67 @@ export class WitnessLabelElement extends BaseElement {
   }
 }
 
+const PLAYER_CSS = `
+:host { display: block; position: relative; }
+:host([hidden]) { display: none; }
+.frame { position: relative; display: block; }
+.bar { display: block; margin-block-end: .5em; }
+::slotted(video), ::slotted(audio) { display: block; max-width: 100%; }
+`;
+
+/**
+ * `<witness-player kind="deepfake" generator="video-model" href="/ki"><video src="clip.mp4" controls></video></witness-player>`
+ *
+ * The label stays visible while the media plays: an overlay in the corner of a video, a bar above
+ * the controls of an audio player. Takes the same attributes as `<witness-label>`.
+ */
+export class WitnessPlayerElement extends BaseElement {
+  static observedAttributes = [
+    "kind",
+    "locale",
+    "generator",
+    "generator-version",
+    "created",
+    "reviewed",
+    "href",
+  ];
+
+  connectedCallback(): void {
+    if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+    this.#render();
+  }
+
+  attributeChangedCallback(): void {
+    if (this.isConnected && this.shadowRoot) this.#render();
+  }
+
+  #render(): void {
+    const root = this.shadowRoot;
+    if (!root) return;
+    const doc = this.ownerDocument;
+    const label = doc.createElement("witness-label");
+    for (const name of WitnessPlayerElement.observedAttributes) {
+      const value = this.getAttribute(name);
+      if (value !== null) label.setAttribute(name, value);
+    }
+    if (!label.hasAttribute("kind")) label.setAttribute("kind", "generated");
+    const video = this.querySelector("video") !== null;
+    label.setAttribute("variant", video ? "overlay" : "inline");
+    const slot = h(doc, "slot", {});
+    const frame = h(doc, "div", { class: "frame" });
+    if (video) frame.append(slot, label);
+    else {
+      const bar = h(doc, "div", { class: "bar" });
+      bar.append(label);
+      frame.append(bar, slot);
+    }
+    slot.addEventListener("slotchange", () => {
+      if ((this.querySelector("video") !== null) !== video) this.#render();
+    });
+    root.replaceChildren(h(doc, "style", {}, PLAYER_CSS), frame);
+  }
+}
+
 function formatDate(value: string, tags: string[]): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -349,12 +412,15 @@ export function defineWitnessElements(): void {
     customElements.define("witness-notice", WitnessNoticeElement);
   if (!customElements.get("witness-label"))
     customElements.define("witness-label", WitnessLabelElement);
+  if (!customElements.get("witness-player"))
+    customElements.define("witness-player", WitnessPlayerElement);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
     "witness-notice": WitnessNoticeElement;
     "witness-label": WitnessLabelElement;
+    "witness-player": WitnessPlayerElement;
   }
   interface HTMLElementEventMap {
     "witness-shown": CustomEvent<DisclosureEvent>;

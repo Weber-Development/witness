@@ -54,7 +54,7 @@ description: Every export of @sweberdev/witness.
 
 ## `@sweberdev/witness/elements`
 
-Registers `<witness-notice>` and `<witness-label>`. `@sweberdev/witness/elements/define` exports the classes and `defineWitnessElements()` without registering.
+Registers `<witness-notice>`, `<witness-label>` and `<witness-player>`. `@sweberdev/witness/elements/define` exports the classes and `defineWitnessElements()` without registering.
 
 ## `@sweberdev/witness/ai-sdk`
 

@@ -85,3 +85,21 @@ describe("<witness-label>", () => {
     document.documentElement.lang = "";
   });
 });
+
+describe("<witness-player>", () => {
+  it("puts the label over a video and above an audio player", () => {
+    document.body.innerHTML = `
+      <witness-player id="v" kind="deepfake" locale="de"><video src="a.mp4" controls></video></witness-player>
+      <witness-player id="a" locale="en"><audio src="a.mp3" controls></audio></witness-player>`;
+    const video = document.querySelector("#v")?.shadowRoot;
+    const label = video?.querySelector("witness-label");
+    expect(label?.getAttribute("variant")).toBe("overlay");
+    expect(label?.getAttribute("kind")).toBe("deepfake");
+    expect(label?.shadowRoot?.querySelector(".badge")?.textContent).toContain("Künstlich erzeugt");
+    expect(video?.querySelector("slot")).not.toBeNull();
+
+    const audio = document.querySelector("#a")?.shadowRoot;
+    expect(audio?.querySelector(".bar witness-label")?.getAttribute("variant")).toBe("inline");
+    expect(audio?.querySelector("witness-label")?.getAttribute("kind")).toBe("generated");
+  });
+});
