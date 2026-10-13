@@ -52,3 +52,11 @@ Releases use Changesets: add a changeset with `pnpm changeset`; merging the "ver
 ## Licence
 
 MIT. Witness Pro (all EU languages, CI scanner, transparency report) is a separate commercial product: [packages.sweber.dev/witness](https://packages.sweber.dev/witness).
+
+<!-- pro-promo -->
+## Witness Pro
+
+Witness Pro adds `witness-locales` (all 24 EU languages), `witness-scan` (CI scanner for unlabelled AI content), `witness-report` (AI register and client report) and `witness-sign` (C2PA signing with your own certificate). From CHF 19 per month, or a one-time Lifetime licence.
+
+[See Witness Pro](https://packages.sweber.dev/witness?utm_source=npm&utm_medium=readme&utm_campaign=pro)
+<!-- /pro-promo -->

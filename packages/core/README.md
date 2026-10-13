@@ -20,3 +20,11 @@ npx witness inspect marked/*.png
 Witness is a tool for implementing the duties, not a compliance guarantee.
 
 Docs: [packages.sweber.dev/witness/docs](https://packages.sweber.dev/witness/docs) · MIT
+
+<!-- pro-promo -->
+## Witness Pro
+
+Witness Pro adds `witness-locales` (all 24 EU languages), `witness-scan` (CI scanner for unlabelled AI content), `witness-report` (AI register and client report) and `witness-sign` (C2PA signing with your own certificate). From CHF 19 per month, or a one-time Lifetime licence.
+
+[See Witness Pro](https://packages.sweber.dev/witness?utm_source=npm&utm_medium=readme&utm_campaign=pro)
+<!-- /pro-promo -->
