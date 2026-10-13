@@ -93,3 +93,12 @@
 | Pro 0.9.0 | `@sweberdev/witness` range widened to `^0.9.0 \|\| ^1.0.0` in scan and sign |
 | Blog post | `content/blog/witness-0-9-0-released.md` in portfoliov3 |
 | Open for 1.0.0 (Seya) | trademark check "Witness", legal review of the Art. 50 summary and the Pro translations |
+
+## 1.0.0 (2026-10-13)
+
+| What | State |
+|---|---|
+| Free 1.0.0 | versions set by hand; no API change since 0.9.0 |
+| Pro 1.0.0 | major changeset in witness-pro, release via witness-pro-dist |
+| Blog post | `content/blog/witness-1-0-0-released.md` in portfoliov3 |
+| Basis | Seya: "Witness 1.0.0 veröffentlichen" (2026-10-13); trademark: self-check only (licence decision 2026-10-07) |

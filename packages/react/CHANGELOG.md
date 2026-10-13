@@ -1,5 +1,11 @@
 # @sweberdev/witness-react
 
+## 1.0.0
+
+### Major Changes
+
+- First stable release. The API of 0.9.0 is unchanged and now covered by [semantic versioning](docs/reference/stability.md): every export, custom element, attribute, event and command line option on the reference pages stays compatible until 2.0.0. Free and Pro move to 1.0.0 together.
+
 ## 0.9.0
 
 ### Minor Changes
