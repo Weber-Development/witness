@@ -4,3 +4,7 @@ export { AiNotice, type AiNoticeProps } from "./AiNotice.js";
 export { AiPlayer, type AiPlayerProps } from "./AiPlayer.js";
 export { useWitnessMessages, WitnessProvider, type WitnessProviderProps } from "./context.js";
 export { type UseAiDisclosureResult, useAiDisclosure } from "./useAiDisclosure.js";
+export {
+  type UseContentCredentialsResult,
+  useContentCredentials,
+} from "./useContentCredentials.js";

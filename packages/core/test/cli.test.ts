@@ -72,6 +72,32 @@ describe("witness CLI", () => {
     expect(result.out[0]).toContain("generator Claude");
   });
 
+  it("reports the marking layers against the Code of Practice", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "witness-"));
+    const out = join(dir, "out");
+    const src = join(dir, "tone.wav");
+    await copyFile(new URL("./fixtures/tone.wav", import.meta.url), src);
+    await runCli(["mark", src, "--out", out, "--generator", "Voice"], io().io);
+    const marked = join(out, "tone.wav");
+
+    const one = io();
+    expect(await runCli(["layers", marked, "--require"], one.io)).toBe(1);
+    expect(one.out[0]).toContain("layers metadata, 1 of 2 machine-readable");
+
+    const two = io();
+    expect(
+      await runCli(["layers", marked, "--assume", "watermark", "--json", "--require"], two.io),
+    ).toBe(0);
+    expect(JSON.parse(two.out[0] ?? "{}")).toMatchObject({
+      contentType: "audio",
+      layers: ["metadata", "watermark"],
+      satisfied: true,
+    });
+
+    const text = io();
+    expect(await runCli(["layers", join(dir, "nothing.txt")], text.io)).toBe(1);
+  });
+
   it("refuses to mark without a target and rejects unknown kinds", async () => {
     const result = io();
     expect(await runCli(["mark", "x.png"], result.io)).toBe(1);

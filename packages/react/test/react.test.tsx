@@ -1,7 +1,16 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AiContent, AiLabel, AiNotice, AiPlayer, WitnessProvider } from "../src/index.js";
+import {
+  AiContent,
+  AiLabel,
+  AiNotice,
+  AiPlayer,
+  useContentCredentials,
+  WitnessProvider,
+} from "../src/index.js";
 
 beforeEach(() => {
   localStorage.clear();
@@ -100,5 +109,43 @@ describe("AiPlayer", () => {
     expect(container.querySelector("[data-ai-generated]")).not.toBeNull();
     expect(container.querySelector(".witness-badge--overlay")).not.toBeNull();
     expect(container.querySelector("video")).not.toBeNull();
+  });
+});
+
+describe("useContentCredentials", () => {
+  const png = new Uint8Array(
+    readFileSync(join(process.cwd(), "../core/test/fixtures/c2pa/signed.png")),
+  );
+
+  function Probe({ src }: { src?: string }) {
+    const { state, info } = useContentCredentials(src);
+    return (
+      <p data-testid="out">
+        {state}:{info?.generator ?? ""}
+      </p>
+    );
+  }
+
+  it("reads the manifest of a file", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(png.slice().buffer as ArrayBuffer, { status: 200 })),
+    );
+    render(<Probe src="/a.png" />);
+    await waitFor(() =>
+      expect(screen.getByTestId("out").textContent).toBe("found:Image Model X 3"),
+    );
+    vi.unstubAllGlobals();
+  });
+
+  it("reports none and error", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 404 })),
+    );
+    render(<Probe src="/missing.png" />);
+    await waitFor(() => expect(screen.getByTestId("out").textContent).toBe("error:"));
+    vi.unstubAllGlobals();
+    expect(renderToString(<Probe />)).toContain("idle");
   });
 });

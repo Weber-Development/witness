@@ -10,7 +10,8 @@ description: Every export of @sweberdev/witness, and the React package.
 | Function | |
 |---|---|
 | `createMarking(input?)` | Applies defaults: `kind` `generated`, source type from the kind, `createdAt` now |
-| `markingAttributes(marking)` | `data-ai-generated`, `data-ai-kind`, `data-ai-source-type`, `data-ai-created`, `data-ai-generator`, `data-ai-provider`, `data-ai-reviewed` |
+| `normaliseMarking(input)` | Upgrades a marking or input of any schema to a schema 2 `Marking` |
+| `markingAttributes(marking)` | `data-ai-generated`, `data-ai-schema`, `data-ai-layers`, `data-ai-kind`, `data-ai-source-type`, `data-ai-created`, `data-ai-generator`, `data-ai-provider`, `data-ai-reviewed` |
 | `markingMetaTags(marking)`, `renderMetaTags(marking)` | `ai-generated`, `ai-source-type`, `ai-generator`, `ai-reviewed` |
 | `nextMetadata(marking)` | `{ other }` for Next.js `metadata` |
 | `markingJsonLd(marking, extra?)`, `renderJsonLd(marking, extra?)` | schema.org with `digitalSourceType` |
@@ -18,7 +19,19 @@ description: Every export of @sweberdev/witness, and the React package.
 | `labelText(marking, options?)` | "KI-generiert · Erzeugt mit Claude" |
 | `iptcSourceType(type)`, `schemaOrgSourceType(type)`, `parseSourceType(uri)`, `isAiSourceType(type)` | Source type helpers |
 
-`MarkingInput`: `kind` (`generated`, `edited`, `deepfake`), `sourceType`, `generator`, `generatorVersion`, `provider`, `createdAt`, `disclosureUrl`, `humanReviewed`, `description`.
+`MarkingInput`: `kind` (`generated`, `edited`, `deepfake`), `sourceType`, `generator`, `generatorVersion`, `provider`, `createdAt`, `disclosureUrl`, `humanReviewed`, `description`, `layers`. `Marking` adds `schema: 2` and `layers`.
+
+### Layers
+
+| Function | |
+|---|---|
+| `assessLayers(contentType, layers, { words }?)` | Compares layers with the Code of Practice: `{ required, present, satisfied, missing, notes }` |
+| `inspectLayers(bytes)` | `{ contentType, layers, watermarkChecked }` for an image, audio or video file |
+| `parseLayers(value)` | Normalises a string or list to `MarkingLayer[]` |
+| `MARKING_LAYERS`, `MACHINE_READABLE_LAYERS`, `SHORT_TEXT_WORDS` | Constants |
+| `MarkingLayer`, `LayerAssessment`, `LayerContentType`, `FileLayers`, `AssessLayersOptions` | Types |
+
+See [Marking layers](../guides/layers.md).
 
 ### Images
 
@@ -72,7 +85,7 @@ description: Every export of @sweberdev/witness, and the React package.
 
 ## `@sweberdev/witness/elements`
 
-Registers `<witness-notice>`, `<witness-label>` and `<witness-player>` (see [Labels](../guides/labels.md) and [Audio and video](../guides/audio-video.md)). `@sweberdev/witness/elements/define` exports the classes and `defineWitnessElements()` without registering.
+Registers `<witness-notice>`, `<witness-label>`, `<witness-player>` and `<witness-credentials>` (see [Labels](../guides/labels.md), [Audio and video](../guides/audio-video.md) and [Content Credentials](../guides/credentials.md)). `@sweberdev/witness/elements/define` exports the classes and `defineWitnessElements()` without registering.
 
 ## `@sweberdev/witness/ai-sdk`
 
@@ -92,5 +105,6 @@ Styles for `labelHtml` output and the React components.
 | `AiPlayer`, `AiPlayerProps` | Wraps an `<audio>` or `<video>` with a label that stays visible; `media` `video` or `audio` |
 | `WitnessProvider`, `WitnessProviderProps`, `useWitnessMessages` | Default locale and wording overrides for the components below it |
 | `useAiDisclosure`, `UseAiDisclosureResult` | The disclosure state as a hook |
+| `useContentCredentials`, `UseContentCredentialsResult` | Reads the C2PA manifest of a file in the browser |
 
 Props and examples: [React](../guides/react.md).

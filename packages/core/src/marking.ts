@@ -1,4 +1,5 @@
 import { format, getMessages } from "./i18n.js";
+import { parseLayers } from "./layers.js";
 import type { ContentKind, LocaleOverride, Marking, MarkingInput, SourceType } from "./types.js";
 
 const IPTC_BASE = "http://cv.iptc.org/newscodes/digitalsourcetype/";
@@ -57,6 +58,8 @@ export function createMarking(input: MarkingInput = {}): Marking {
       ? input.createdAt.toISOString()
       : (input.createdAt ?? new Date().toISOString());
   const marking: Marking = {
+    schema: 2,
+    layers: parseLayers(input.layers ?? ["visible", "metadata"]),
     kind,
     sourceType: input.sourceType ?? DEFAULT_SOURCE[kind],
     createdAt,
@@ -75,9 +78,10 @@ export function createMarking(input: MarkingInput = {}): Marking {
  * element that wraps the content.
  */
 export function markingAttributes(input: Marking | MarkingInput): Record<string, string> {
-  const m = normalise(input);
+  const m = normaliseMarking(input);
   const attributes: Record<string, string> = {
     "data-ai-generated": "true",
+    "data-ai-schema": String(m.schema),
     "data-ai-kind": m.kind,
     "data-ai-source-type": iptcSourceType(m.sourceType),
     "data-ai-created": m.createdAt,
@@ -85,6 +89,7 @@ export function markingAttributes(input: Marking | MarkingInput): Record<string,
   if (m.generator) attributes["data-ai-generator"] = generatorName(m);
   if (m.provider) attributes["data-ai-provider"] = m.provider;
   if (m.humanReviewed) attributes["data-ai-reviewed"] = "true";
+  if (m.layers.length > 0) attributes["data-ai-layers"] = m.layers.join(" ");
   return attributes;
 }
 
@@ -95,7 +100,7 @@ export function markingAttributes(input: Marking | MarkingInput): Record<string,
 export function markingMetaTags(
   input: Marking | MarkingInput,
 ): Array<{ name: string; content: string }> {
-  const m = normalise(input);
+  const m = normaliseMarking(input);
   const tags = [
     { name: "ai-generated", content: m.kind },
     { name: "ai-source-type", content: iptcSourceType(m.sourceType) },
@@ -127,7 +132,7 @@ export function markingJsonLd(
   input: Marking | MarkingInput,
   extra: Record<string, unknown> = {},
 ): Record<string, unknown> {
-  const m = normalise(input);
+  const m = normaliseMarking(input);
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -174,7 +179,7 @@ export function labelHtml(
   input: Marking | MarkingInput,
   options: LabelHtmlOptions = {},
 ): string {
-  const m = normalise(input);
+  const m = normaliseMarking(input);
   const tag = options.tag ?? "div";
   const attributes = Object.entries(markingAttributes(m))
     .map(([name, value]) => ` ${name}="${escapeHtml(value)}"`)
@@ -189,7 +194,7 @@ export function labelText(
   input: Marking | MarkingInput,
   options: Pick<LabelHtmlOptions, "locale" | "messages"> = {},
 ): string {
-  const m = normalise(input);
+  const m = normaliseMarking(input);
   const messages = getMessages(options.locale, options.messages);
   const parts = [messages.kinds[m.kind].label];
   if (m.generator) {
@@ -214,12 +219,15 @@ export function generatorName(m: Pick<Marking, "generator" | "generatorVersion">
   return m.generatorVersion ? `${m.generator} ${m.generatorVersion}` : m.generator;
 }
 
-function normalise(input: Marking | MarkingInput): Marking {
+/** Upgrades a marking or input of any schema version to a schema 2 {@link Marking}. */
+export function normaliseMarking(input: Marking | MarkingInput): Marking {
   return isMarking(input) ? input : createMarking(input);
 }
 
 function isMarking(input: Marking | MarkingInput): input is Marking {
   return (
+    (input as Marking).schema === 2 &&
+    Array.isArray((input as Marking).layers) &&
     typeof input.kind === "string" &&
     typeof input.sourceType === "string" &&
     typeof input.createdAt === "string" &&

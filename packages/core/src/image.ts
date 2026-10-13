@@ -10,10 +10,10 @@
 import { type C2paInfo, readC2pa } from "./c2pa.js";
 import { inflateZlib } from "./inflate.js";
 import {
-  createMarking,
   generatorName,
   iptcSourceType,
   isAiSourceType,
+  normaliseMarking,
   parseSourceType,
 } from "./marking.js";
 import type { Marking, MarkingInput, SourceType } from "./types.js";
@@ -79,8 +79,7 @@ export function markImage(
   if (options.c2pa !== "overwrite" && hasC2pa(bytes, format)) {
     return { bytes, status: "skipped-c2pa", format };
   }
-  const marking =
-    "sourceType" in input && "humanReviewed" in input ? (input as Marking) : createMarking(input);
+  const marking = normaliseMarking(input);
   const existing = readXmp(bytes, format);
   const xmp = buildXmp(marking, existing);
   const out =

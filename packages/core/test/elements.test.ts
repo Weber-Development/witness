@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import "../src/elements-auto.js";
 
@@ -101,5 +103,60 @@ describe("<witness-player>", () => {
     const audio = document.querySelector("#a")?.shadowRoot;
     expect(audio?.querySelector(".bar witness-label")?.getAttribute("variant")).toBe("inline");
     expect(audio?.querySelector("witness-label")?.getAttribute("kind")).toBe("generated");
+  });
+});
+
+describe("<witness-credentials>", () => {
+  const png = new Uint8Array(readFileSync(join(process.cwd(), "test/fixtures/c2pa/signed.png")));
+
+  function mockFetch(bytes: Uint8Array | null): void {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        bytes
+          ? new Response(bytes.slice().buffer as ArrayBuffer, { status: 200 })
+          : new Response("", { status: 404 }),
+      ),
+    );
+  }
+
+  async function settled(el: Element): Promise<{ info: unknown; state: string }> {
+    return new Promise((resolve) => {
+      el.addEventListener("witness-credentials", (event) => resolve((event as CustomEvent).detail));
+    });
+  }
+
+  it("reads the manifest and says it is not verified", async () => {
+    mockFetch(png);
+    document.body.innerHTML =
+      '<witness-credentials src="/a.png" locale="en"></witness-credentials>';
+    const el = document.querySelector("witness-credentials") as HTMLElement;
+    const detail = await settled(el);
+    expect(detail.state).toBe("found");
+    expect(el.hidden).toBe(false);
+    const root = el.shadowRoot;
+    expect(root?.querySelector(".badge")?.textContent).toContain("Content Credentials");
+    expect(root?.querySelector("#panel")?.textContent).toContain("Not verified");
+    expect(root?.querySelector("#panel")?.textContent).toContain("Image Model X 3");
+    vi.unstubAllGlobals();
+  });
+
+  it("stays hidden when the file has no credentials", async () => {
+    mockFetch(new Uint8Array(readFileSync(join(process.cwd(), "test/fixtures/tone.wav"))));
+    document.body.innerHTML = '<witness-credentials src="/a.wav"></witness-credentials>';
+    const el = document.querySelector("witness-credentials") as HTMLElement;
+    expect((await settled(el)).state).toBe("none");
+    expect(el.hidden).toBe(true);
+    vi.unstubAllGlobals();
+  });
+
+  it("reports an error for a missing file", async () => {
+    mockFetch(null);
+    document.body.innerHTML =
+      '<witness-credentials src="/missing.png" locale="de"></witness-credentials>';
+    const el = document.querySelector("witness-credentials") as HTMLElement;
+    expect((await settled(el)).state).toBe("error");
+    expect(el.shadowRoot?.querySelector("#panel")?.textContent).toContain("nicht gelesen");
+    vi.unstubAllGlobals();
   });
 });

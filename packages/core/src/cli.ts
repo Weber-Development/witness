@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { detectImageFormat } from "./image.js";
+import { assessLayers, inspectLayers, type MarkingLayer, parseLayers } from "./layers.js";
 import { iptcSourceType } from "./marking.js";
 import { detectMediaFormat, markFile, readMarking } from "./media.js";
 import type { ContentKind, MarkingInput } from "./types.js";
@@ -17,6 +18,7 @@ const HELP = `witness: AI Act Article 50 marking for images, audio, video and te
 Usage
   witness mark <files...> (--out <dir> | --in-place) [options]
   witness inspect <files...> [--json] [--require]
+  witness layers <files...> [--assume <layers>] [--json] [--require]
 
 mark options
   --generator <name>         AI system, e.g. "gpt-image-2"
@@ -30,6 +32,12 @@ mark options
 inspect options
   --json                     one JSON object per file
   --require                  exit 1 if a file carries no AI marking
+
+layers options
+  --assume <layers>          layers Witness cannot detect but you applied, e.g. "watermark"
+  --json                     one JSON object per file
+  --require                  exit 1 if a file has fewer machine-readable layers than the
+                             Code of Practice asks for (two for image, audio and video)
 
 Images: PNG, JPEG, WebP. Audio and video: MP3, WAV, MP4, MOV, M4A.
 All get XMP with the IPTC Digital Source Type.
@@ -46,6 +54,7 @@ export async function runCli(argv: string[], io: CliIo = defaultIo): Promise<num
   try {
     if (command === "mark") return await mark(rest, io);
     if (command === "inspect") return await inspect(rest, io);
+    if (command === "layers") return await layers(rest, io);
     io.err(`Unknown command "${command}". Run "witness --help".`);
     return 1;
   } catch (error) {
@@ -158,6 +167,41 @@ async function inspect(argv: string[], io: CliIo): Promise<number> {
     }
   }
   return values.require && unmarked > 0 ? 1 : 0;
+}
+
+async function layers(argv: string[], io: CliIo): Promise<number> {
+  const { values, positionals } = parseArgs({
+    args: argv,
+    allowPositionals: true,
+    options: {
+      assume: { type: "string" },
+      json: { type: "boolean" },
+      require: { type: "boolean" },
+    },
+  });
+  if (positionals.length === 0) throw new Error("witness layers: no files given.");
+  const assumed = parseLayers(values.assume);
+  let short = 0;
+  for (const file of positionals) {
+    const bytes = new Uint8Array(await readFile(file));
+    const found = inspectLayers(bytes);
+    if (!found.contentType) {
+      io.err(`${file}: not an image, audio or video file Witness can read.`);
+      short++;
+      continue;
+    }
+    const all = [...new Set<MarkingLayer>([...found.layers, ...assumed])];
+    const assessment = assessLayers(found.contentType, all);
+    if (!assessment.satisfied) short++;
+    if (values.json) {
+      io.out(JSON.stringify({ file, contentType: found.contentType, layers: all, ...assessment }));
+    } else {
+      io.out(
+        `${file}: ${found.contentType}, layers ${all.length > 0 ? all.join(" + ") : "none"}, ${assessment.present.length} of ${assessment.required} machine-readable${assessment.satisfied ? "" : `, missing e.g. ${assessment.missing.join(" or ")}`}`,
+      );
+    }
+  }
+  return values.require && short > 0 ? 1 : 0;
 }
 
 const defaultIo: CliIo = {

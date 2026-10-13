@@ -37,6 +37,19 @@ export {
   readImageMarking,
 } from "./image.js";
 export {
+  type AssessLayersOptions,
+  assessLayers,
+  type FileLayers,
+  inspectLayers,
+  type LayerAssessment,
+  type LayerContentType,
+  MACHINE_READABLE_LAYERS,
+  MARKING_LAYERS,
+  type MarkingLayer,
+  parseLayers,
+  SHORT_TEXT_WORDS,
+} from "./layers.js";
+export {
   createMarking,
   escapeHtml,
   generatorName,
@@ -49,6 +62,7 @@ export {
   markingJsonLd,
   markingMetaTags,
   nextMetadata,
+  normaliseMarking,
   parseSourceType,
   renderJsonLd,
   renderMetaTags,

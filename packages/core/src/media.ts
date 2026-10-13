@@ -23,7 +23,7 @@ import {
   withC2pa,
   xmpProperty,
 } from "./image.js";
-import { createMarking, isAiSourceType, parseSourceType } from "./marking.js";
+import { isAiSourceType, normaliseMarking, parseSourceType } from "./marking.js";
 import type { Marking, MarkingInput } from "./types.js";
 
 export type MediaFormat = "mp3" | "wav" | "mp4";
@@ -77,8 +77,7 @@ export function markMedia(
   if (options.c2pa !== "overwrite" && parsed.c2pa) {
     return { bytes, status: "skipped-c2pa", format };
   }
-  const marking =
-    "sourceType" in input && "humanReviewed" in input ? (input as Marking) : createMarking(input);
+  const marking = normaliseMarking(input);
   const xmp = buildXmp(marking, parsed.xmp);
   const out =
     format === "mp3"

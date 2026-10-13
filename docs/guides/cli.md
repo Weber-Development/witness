@@ -21,3 +21,11 @@ In PowerShell, quote globs or list files explicitly:
 ```powershell
 npx witness mark (Get-ChildItem public\generated\*.png).FullName --out public\marked --generator "gpt-image-2"
 ```
+
+## `witness layers`
+
+```sh
+npx witness layers ./out/* [--assume watermark] [--json] [--require]
+```
+
+Shows which marking layers an image, audio or video file carries (`metadata`, `credentials`) and how many machine-readable layers the Code of Practice asks for. `--assume` adds layers Witness cannot detect, such as a provider's watermark. `--require` exits 1 when a file has too few. See [Marking layers](layers.md).
