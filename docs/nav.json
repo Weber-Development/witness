@@ -2,12 +2,7 @@
   "sections": [
     {
       "label": "Start",
-      "items": [
-        "introduction",
-        "getting-started",
-        "legal/article-50",
-        "migrating-to-2"
-      ]
+      "items": ["introduction", "getting-started", "legal/article-50", "migrating-to-2"]
     },
     {
       "label": "Guides",
@@ -27,22 +22,11 @@
     },
     {
       "label": "Pro",
-      "items": [
-        "pro/overview",
-        "pro/locales",
-        "pro/scan",
-        "pro/report",
-        "pro/sign"
-      ]
+      "items": ["pro/overview", "pro/locales", "pro/scan", "pro/report", "pro/sign"]
     },
     {
       "label": "Reference",
-      "items": [
-        "reference/api",
-        "reference/pro-api",
-        "reference/locales",
-        "reference/stability"
-      ]
+      "items": ["reference/api", "reference/pro-api", "reference/locales", "reference/stability"]
     }
   ]
 }
