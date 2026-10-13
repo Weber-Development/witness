@@ -156,3 +156,19 @@ The HTML report has print rules: print it from the browser and choose "Save as P
 | `--fragment` | Public page without the `<html>` wrapper, for your own layout. |
 
 `witness-report check` validates the register and exits with 1 on problems, so it fits into CI next to the scanner.
+
+## Evidence bundle
+
+For an auditor, a client or your own file, collect everything in one folder (Witness Pro 2.1):
+
+```sh
+witness-report evidence --out evidence/2026-10 --scan witness-scan.json --history witness.register-history.json
+```
+
+The folder holds the register, the client report (HTML and Markdown), the public page, the legal status with open changes, a list of open points (workflow warnings, AI use the register misses, key dates), and the scan, change log and notice events if you pass them. `evidence.json` lists every file with its SHA-256 hash.
+
+```sh
+witness-report evidence --verify evidence/2026-10
+```
+
+reports files that were modified, are missing or were added since. The bundle is not signed. To prove the date, keep the manifest hash printed at the end (and in `README.txt`) somewhere you do not control alone, for example in an email to your auditor. The bundle documents what you had and did; it does not say whether the use of AI complies with Article 50.

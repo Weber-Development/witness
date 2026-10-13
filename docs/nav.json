@@ -22,7 +22,14 @@
     },
     {
       "label": "Pro",
-      "items": ["pro/overview", "pro/locales", "pro/scan", "pro/report", "pro/sign"]
+      "items": [
+        "pro/overview",
+        "pro/locales",
+        "pro/scan",
+        "pro/monitoring",
+        "pro/report",
+        "pro/sign"
+      ]
     },
     {
       "label": "Reference",
