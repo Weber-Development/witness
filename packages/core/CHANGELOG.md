@@ -1,5 +1,11 @@
 # @sweberdev/witness
 
+## 2.0.1
+
+### Patch Changes
+
+- f32d7cd: README: add a section about Witness Pro.
+
 ## 2.0.0
 
 ### Major Changes

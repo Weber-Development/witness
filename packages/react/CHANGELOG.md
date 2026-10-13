@@ -1,5 +1,13 @@
 # @sweberdev/witness-react
 
+## 2.0.1
+
+### Patch Changes
+
+- f32d7cd: README: add a section about Witness Pro.
+- Updated dependencies [f32d7cd]
+  - @sweberdev/witness@2.0.1
+
 ## 2.0.0
 
 ### Major Changes
