@@ -5,5 +5,7 @@
     "@sweberdev/witness": "1.0.0",
     "@sweberdev/witness-react": "1.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "witness-2-0"
+  ]
 }
