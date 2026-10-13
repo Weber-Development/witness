@@ -24,6 +24,8 @@ All Pro packages are on GitHub Packages under `@weber-development`; see [Witness
 | `verifyC2pa(bytes, { trustAnchors?, now? })` | Checks the active C2PA manifest of a file: signature, assertion hashes, file binding and signer. Returns `{ status, signature, assertions, binding, trust, signer?, manifests, problems }` or `null` without a manifest. [Details](../pro/scan.md#c2pa-verification) |
 | `formatText(report)`, `formatMarkdown(report)`, `formatGithubAnnotations(report, prefix?)` | The report as console text, a Markdown table and GitHub workflow annotations |
 | `ruleTitle(rule)` | The readable title of a rule id |
+| `createBaseline(report)`, `parseBaseline(text)`, `compareToBaseline(report, baseline)`, `findingKey(finding)` | [Baseline of known findings](../pro/monitoring.md): new, fixed and unchanged findings |
+| `formatComparisonMarkdown(comparison)`, `alertPayload(report, comparison, label?)`, `sendAlert(url, payload)` | The pull request comment, the alert body and sending it over https |
 | `routeToFile(route)` | The pseudo file name a rendered route gets in the report, e.g. `/support` becomes `support/index.html` |
 
 Types: `ScanConfig`, `ScanReport`, `Finding`, `Inventory`, `RuleId`, `Severity` (`error` or `warning`), `ChatRule`, `RenderConfig`, `C2paConfig`, `AiPageUse`, `C2paVerification`, `C2paVerifyOptions`, `C2paCheck`, `C2paSigner`.
@@ -42,6 +44,7 @@ Types: `ScanConfig`, `ScanReport`, `Finding`, `Inventory`, `RuleId`, `Severity` 
 | `keyDates(systems, today)` | The Article 50 dates that concern the register's systems |
 | `parseRegisterCsv(text)`, `registerToCsv(systems)`, `mergeSystems(existing, imported, { replace? })` | [Spreadsheet import and export](../pro/report.md) |
 | `suggestSystems(register, aiPages)`, `routeOf(file)` | [Draft systems for AI use the register misses](../pro/report.md#finding-what-the-register-misses) |
+| `buildManifest(files, { organisation, legalStatus })`, `parseManifest(text)`, `verifyManifest(manifest, files)`, `sha256(content)` | [Evidence bundle](../pro/report.md#evidence-bundle): the hash manifest and its check |
 | `recordHistory(history, register, { note?, at? })`, `emptyHistory()`, `parseHistory(text)`, `diffSystems(before, after)`, `unrecordedChanges(history, register)` | [The register change log](../pro/report.md#change-log) |
 | `LEGAL_CHANGES`, `LEGAL_STATUS_VERSION`, `legalChangesSince(version?)` | [The legal status changelog](../pro/report.md#legal-status) |
 | `reportText(locale)` | The wording of the report in `en`, `de`, `fr` or `it` |
