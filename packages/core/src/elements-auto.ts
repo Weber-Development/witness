@@ -4,6 +4,7 @@ defineWitnessElements();
 
 export {
   defineWitnessElements,
+  WitnessCredentialsElement,
   WitnessLabelElement,
   WitnessNoticeElement,
   WitnessPlayerElement,

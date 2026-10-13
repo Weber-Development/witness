@@ -8,7 +8,7 @@ Witness follows [semantic versioning](https://semver.org). From 1.0.0, a minor o
 ## What the version covers
 
 - Every export listed on the [API reference](api.md) and the [Pro API reference](pro-api.md), with their documented behaviour and types.
-- The custom elements `<witness-notice>`, `<witness-label>` and `<witness-player>`: their names, attributes, events (`witness-shown`, `witness-acknowledged`) and CSS custom properties and `part` names.
+- The custom elements `<witness-notice>`, `<witness-label>`, `<witness-player>` and `<witness-credentials>`: their names, attributes, events (`witness-shown`, `witness-acknowledged`) and CSS custom properties and `part` names.
 - The markup that `labelHtml` writes and the `data-ai-*` attributes.
 - What is written into files: the XMP packet, the IPTC source types and the text watermark format. Files marked with an older version stay readable.
 - Command line options and exit codes of `witness`, `witness-scan`, `witness-report` and `witness-sign`.

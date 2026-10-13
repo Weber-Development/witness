@@ -1,0 +1,9 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@sweberdev/witness": "1.0.0",
+    "@sweberdev/witness-react": "1.0.0"
+  },
+  "changesets": []
+}

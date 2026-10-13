@@ -1,3 +1,5 @@
+import type { MarkingLayer } from "./layers.js";
+
 /**
  * The transparency situations Article 50 of the EU AI Act describes.
  *
@@ -99,10 +101,19 @@ export interface MarkingInput {
   humanReviewed?: boolean;
   /** Free text, e.g. "Image generated from the prompt by the newsroom". */
   description?: string;
+  /**
+   * The marking layers you apply to this content, for evidence. `createMarking` adds `visible`
+   * and `metadata` for markings that are rendered as attributes and labels. See `MarkingLayer`.
+   */
+  layers?: readonly MarkingLayer[];
 }
 
 /** A normalised marking with all defaults applied. */
 export interface Marking {
+  /** Marking schema version. Always 2; markings without it are upgraded by `createMarking`. */
+  schema: 2;
+  /** The marking layers applied to the content, without duplicates. */
+  layers: MarkingLayer[];
   kind: ContentKind;
   sourceType: SourceType;
   generator?: string;

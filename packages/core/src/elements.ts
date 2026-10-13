@@ -10,8 +10,9 @@
  * Import `@sweberdev/witness/elements` to register both, or call `defineWitnessElements()`.
  */
 
+import { type C2paInfo, readC2pa } from "./c2pa.js";
 import { createDisclosure, type Disclosure, type DisclosureEvent } from "./disclosure.js";
-import { format, getMessages } from "./i18n.js";
+import { format, getMessages, resolveLocale } from "./i18n.js";
 import { DISCLOSURE_KINDS, type DisclosureKind } from "./types.js";
 
 const BaseElement: typeof HTMLElement =
@@ -406,7 +407,225 @@ function getLocaleCode(tags: string[]): string {
   return tags[0] ?? "en";
 }
 
-/** Registers `<witness-notice>` and `<witness-label>` once. Safe to call during SSR. */
+const CREDENTIALS_TEXT: Record<string, Record<string, string>> = {
+  en: {
+    label: "Content Credentials",
+    title: "Content Credentials",
+    found: "This file carries a C2PA manifest.",
+    none: "No Content Credentials found in this file.",
+    error: "The file could not be read.",
+    ai: "The manifest declares AI as the source.",
+    noai: "The manifest does not declare AI as the source.",
+    tool: "Made with {generator}",
+    unverified:
+      "Not verified: the signature and certificate were not checked in the browser. Use a C2PA validator for that.",
+    actions: "Recorded actions",
+    history: "AI appears in the history of this file.",
+  },
+  de: {
+    label: "Content Credentials",
+    title: "Content Credentials",
+    found: "Diese Datei enthält ein C2PA-Manifest.",
+    none: "In dieser Datei wurden keine Content Credentials gefunden.",
+    error: "Die Datei konnte nicht gelesen werden.",
+    ai: "Das Manifest erklärt KI als Quelle.",
+    noai: "Das Manifest erklärt KI nicht als Quelle.",
+    tool: "Erstellt mit {generator}",
+    unverified:
+      "Nicht geprüft: Signatur und Zertifikat wurden im Browser nicht kontrolliert. Dafür braucht es einen C2PA-Validator.",
+    actions: "Aufgezeichnete Aktionen",
+    history: "KI taucht in der Vorgeschichte dieser Datei auf.",
+  },
+  fr: {
+    label: "Content Credentials",
+    title: "Content Credentials",
+    found: "Ce fichier contient un manifeste C2PA.",
+    none: "Aucun Content Credentials trouvé dans ce fichier.",
+    error: "Le fichier n'a pas pu être lu.",
+    ai: "Le manifeste déclare l'IA comme source.",
+    noai: "Le manifeste ne déclare pas l'IA comme source.",
+    tool: "Créé avec {generator}",
+    unverified:
+      "Non vérifié : la signature et le certificat n'ont pas été contrôlés dans le navigateur. Utilisez un validateur C2PA.",
+    actions: "Actions enregistrées",
+    history: "L'IA apparaît dans l'historique de ce fichier.",
+  },
+  it: {
+    label: "Content Credentials",
+    title: "Content Credentials",
+    found: "Questo file contiene un manifesto C2PA.",
+    none: "Nessun Content Credentials trovato in questo file.",
+    error: "Impossibile leggere il file.",
+    ai: "Il manifesto dichiara l'IA come fonte.",
+    noai: "Il manifesto non dichiara l'IA come fonte.",
+    tool: "Creato con {generator}",
+    unverified:
+      "Non verificato: firma e certificato non sono stati controllati nel browser. Usa un validatore C2PA.",
+    actions: "Azioni registrate",
+    history: "L'IA compare nella cronologia di questo file.",
+  },
+};
+
+type CredentialsState = "idle" | "loading" | "found" | "none" | "error";
+
+/**
+ * `<witness-credentials src="/media/picture.jpg">`
+ *
+ * Reads the C2PA manifest of an image, audio or video file in the browser, without a server, and
+ * shows what it says in a details popover. Witness only reads the manifest; it does not check
+ * the signature, so the popover says "not verified". Fires `witness-credentials` with
+ * `detail: { info: C2paInfo | null }` when the file is read. The file must be reachable with CORS.
+ */
+export class WitnessCredentialsElement extends BaseElement {
+  static observedAttributes = ["src", "locale", "href", "variant"];
+
+  /** The result of the last read, or `null` when there are no credentials. */
+  info: C2paInfo | null = null;
+
+  #state: CredentialsState = "idle";
+  #open = false;
+  #loaded = "";
+  #onKey = (event: KeyboardEvent) => {
+    if (event.key === "Escape" && this.#open) {
+      this.#toggle(false);
+      this.shadowRoot?.querySelector<HTMLButtonElement>(".badge")?.focus();
+    }
+  };
+  #onOutside = (event: Event) => {
+    if (this.#open && !event.composedPath().includes(this)) this.#toggle(false);
+  };
+
+  connectedCallback(): void {
+    if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+    this.ownerDocument.addEventListener("keydown", this.#onKey);
+    this.ownerDocument.addEventListener("click", this.#onOutside);
+    this.#render();
+    void this.#load();
+  }
+
+  disconnectedCallback(): void {
+    this.ownerDocument.removeEventListener("keydown", this.#onKey);
+    this.ownerDocument.removeEventListener("click", this.#onOutside);
+  }
+
+  attributeChangedCallback(name: string): void {
+    if (!this.isConnected || !this.shadowRoot) return;
+    if (name === "src") void this.#load();
+    else this.#render();
+  }
+
+  #toggle(open: boolean): void {
+    this.#open = open;
+    this.#render();
+  }
+
+  async #load(): Promise<void> {
+    const src = this.getAttribute("src");
+    if (!src || src === this.#loaded) return;
+    this.#loaded = src;
+    this.#state = "loading";
+    this.info = null;
+    this.#render();
+    try {
+      const response = await fetch(src);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const info = readC2pa(new Uint8Array(await response.arrayBuffer()));
+      if (this.getAttribute("src") !== src) return;
+      this.info = info;
+      this.#state = info ? "found" : "none";
+    } catch {
+      if (this.getAttribute("src") !== src) return;
+      this.#state = "error";
+    }
+    this.#render();
+    this.dispatchEvent(
+      new CustomEvent("witness-credentials", {
+        bubbles: true,
+        composed: true,
+        detail: { info: this.info, state: this.#state },
+      }),
+    );
+  }
+
+  #render(): void {
+    const root = this.shadowRoot;
+    if (!root) return;
+    const doc = this.ownerDocument;
+    const tags = locale(this);
+    const text = CREDENTIALS_TEXT[resolveLocale(tags)] ?? CREDENTIALS_TEXT.en ?? {};
+    const en = CREDENTIALS_TEXT.en ?? {};
+    const t = (key: string): string => text[key] ?? en[key] ?? key;
+    const href = this.getAttribute("href");
+    const info = this.info;
+
+    // Nothing to show while loading or when the file has no credentials.
+    if (this.#state === "idle" || this.#state === "loading" || this.#state === "none") {
+      root.replaceChildren(h(doc, "style", {}, LABEL_CSS));
+      this.hidden = true;
+      return;
+    }
+    this.hidden = false;
+
+    const badge = h(
+      doc,
+      "button",
+      {
+        type: "button",
+        class: "badge",
+        part: "badge",
+        "aria-expanded": String(this.#open),
+        "aria-controls": "panel",
+      },
+      h(doc, "span", { class: "icon", "aria-hidden": "true", part: "icon" }, "CR"),
+      h(doc, "span", { part: "label" }, t("label")),
+    );
+    badge.addEventListener("click", () => this.#toggle(!this.#open));
+
+    const body = h(doc, "div", {});
+    if (this.#state === "error" || !info) {
+      body.append(h(doc, "p", {}, t("error")));
+    } else {
+      body.append(h(doc, "p", {}, t("found")));
+      const facts = h(doc, "ul", {});
+      const tool = info.generator ?? info.active.claimGenerator;
+      if (tool) facts.append(h(doc, "li", {}, format(t("tool"), { generator: tool })));
+      facts.append(h(doc, "li", {}, info.aiGenerated ? t("ai") : t("noai")));
+      if (!info.aiGenerated && info.aiInHistory) facts.append(h(doc, "li", {}, t("history")));
+      body.append(facts);
+      if (info.active.actions.length > 0) {
+        body.append(h(doc, "strong", {}, t("actions")));
+        const list = h(doc, "ul", {});
+        for (const action of info.active.actions) {
+          list.append(h(doc, "li", {}, action.action));
+        }
+        body.append(list);
+      }
+      body.append(h(doc, "p", { class: "muted" }, t("unverified")));
+    }
+
+    const closeLabel = getMessages(tags).ui.close;
+    const close = h(
+      doc,
+      "button",
+      { type: "button", class: "close", "aria-label": closeLabel },
+      "×",
+    );
+    close.addEventListener("click", () => this.#toggle(false));
+    const panel = h(
+      doc,
+      "div",
+      { id: "panel", class: "panel", role: "dialog", "aria-label": t("title"), part: "panel" },
+      close,
+      h(doc, "strong", {}, t("title")),
+      body,
+      href ? h(doc, "a", { href, part: "link" }, getMessages(tags).ui.moreInfo) : null,
+    );
+    if (!this.#open) panel.hidden = true;
+    root.replaceChildren(h(doc, "style", {}, LABEL_CSS), badge, panel);
+  }
+}
+
+/** Registers `<witness-notice>`, `<witness-label>`, `<witness-player>` and `<witness-credentials>`. */
 export function defineWitnessElements(): void {
   if (typeof customElements === "undefined") return;
   if (!customElements.get("witness-notice"))
@@ -415,6 +634,8 @@ export function defineWitnessElements(): void {
     customElements.define("witness-label", WitnessLabelElement);
   if (!customElements.get("witness-player"))
     customElements.define("witness-player", WitnessPlayerElement);
+  if (!customElements.get("witness-credentials"))
+    customElements.define("witness-credentials", WitnessCredentialsElement);
 }
 
 declare global {

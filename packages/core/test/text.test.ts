@@ -54,6 +54,8 @@ describe("marking", () => {
   it("applies defaults per kind", () => {
     const generated = createMarking({ createdAt: "2026-10-05T10:00:00.000Z" });
     expect(generated).toEqual({
+      schema: 2,
+      layers: ["visible", "metadata"],
       kind: "generated",
       sourceType: "trainedAlgorithmicMedia",
       createdAt: "2026-10-05T10:00:00.000Z",
